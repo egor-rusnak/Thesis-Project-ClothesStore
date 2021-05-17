@@ -1,0 +1,36 @@
+﻿@model ClothesStore.WebUI.Models.Cart
+
+
+<h1>Cart</h1>
+<table>
+    <thead>
+    <tr>
+        <td>
+            Item
+        </td>   
+        <td>
+            Count
+        </td>
+        <td>
+            Cost
+        </td>
+    </tr>
+    </thead>
+    <tbody>
+        @foreach (var elem in Model.Lines)
+        {
+            <tr>
+                <td>
+                    @elem.ClothesUnit.Clothes.Name
+                </td>
+                <td>
+                    @elem.Count
+                </td>
+                <td>
+                    @(elem.CostPerSingle*elem.Count)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<h1>SUM: @Model.ComputeTotalValue()</h1>

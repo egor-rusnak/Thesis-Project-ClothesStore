@@ -1,0 +1,18 @@
+﻿@model ClothesStore.WebUI.Models.Clothes.ClothesCategoryView 
+@{ 
+    Layout = "_Layout";
+}
+
+<h1>@Model.RusCategory</h1>
+
+@foreach (var elem in Model.Types)
+{
+    <div class="">
+        <a asp-controller="Clothes" 
+           asp-action="ClothesByTypeAndCategory" 
+           asp-route-category="@Model.Category" 
+           asp-route-type="@elem.Name">
+            @elem.Name
+        </a>
+    </div>
+ }
