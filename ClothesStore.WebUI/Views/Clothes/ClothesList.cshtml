@@ -1,0 +1,26 @@
+﻿@model ClothesListViewModel
+
+@{
+    Layout = "_Layout";
+}
+
+<h2>@Model.CategoryName  -  @Model.TypeName</h2>
+@if (Context.User.Claims.Any(e => e.Value == "Manager") || Context.User.Claims.Any(e => e.Value == "Admin"))
+{
+    <a asp-controller="Clothes" asp-action="Create" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAnQuery()"
+       asp-route-type="@Model.TypeName" asp-route-category="@Model.CategoryName">Додати нову обув</a>
+}
+<div class="row">
+    @foreach (var clothes in Model.Clothes)
+    {
+        <div class="col-3">
+            @Html.Partial("ClothesItem", clothes)
+            @if (Context.User.Claims.Any(e => e.Value == "Manager") || Context.User.Claims.Any(e => e.Value == "Admin"))
+            {
+                <form asp-action="Delete" asp-controller="Clothes" asp-route-id="@clothes.Id" asp-route-returnUrl="@Context.Request.PathAnQuery()">
+                    <button type="submit" class="btn btn-danger">Remove</button>
+                </form>
+            }
+        </div>
+    }
+</div>

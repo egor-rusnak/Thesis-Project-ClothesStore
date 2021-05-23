@@ -1,24 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ClothesStore.Domain.Entities
 {
     public enum ClothesDestinantion
     {
-        Men,
-        Women,
-        Children
+        Чоловіки,
+        Жінки,
+        Діти
     }
-    public class ClothesType:TEntity
+    public class ClothesType : TEntity
     {
         [StringLength(100)]
+        [System.ComponentModel.DisplayName("Назва типу")]
         public string Name { get; set; }
-        public ClothesDestinantion Destinantion { get; set; } 
-        public string imgSrc { get; set; }
-        public IEnumerable<Clothes> Clothes { get;set; }
+        [System.ComponentModel.DisplayName("Категорія")]
+        public ClothesDestinantion Destinantion { get; set; }
+
+        [System.ComponentModel.DisplayName("Рисунок для категорії")]
+        public string ImageName { get; set; }
+        public virtual IEnumerable<Clothes> Clothes { get; set; }
     }
 }

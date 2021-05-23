@@ -1,0 +1,12 @@
+﻿@model  IEnumerable<string>
+
+<h1>Панель администрации</h1>
+
+<div class="container flex-column">
+    @foreach(var elem in Model)
+    {
+       <div class="flex-grow-1">
+           <a class="text-primary" asp-action="@elem">@elem</a>
+       </div>
+    }
+</div>

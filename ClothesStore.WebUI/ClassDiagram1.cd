@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="ClothesStore.WebUI.Services.IdentityService">
+    <Position X="1.25" Y="0.5" Width="6.25" />
+    <TypeIdentifier>
+      <HashCode>EAAABAAAAAAAAAAAAgBAAQAAAAAAAJAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\IdentityService.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="ClothesStore.WebUI.Services.Role">
+    <Position X="1.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAAAAAAAAAQAAAAAABAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\IdentityService.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

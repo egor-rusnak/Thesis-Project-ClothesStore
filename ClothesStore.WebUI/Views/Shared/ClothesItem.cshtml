@@ -1,0 +1,23 @@
+﻿@model ClothesViewModel 
+
+<div class="card" style="height:30em">
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                <a style="text-decoration:none;" asp-action="Details" asp-controller="Clothes" asp-route-id="@Model.Id" asp-route-returnUrl="@Context.Request.PathAnQuery()">
+                    <img style="margin-bottom:0.4em; background-color:aqua;" class="card-img-top" src="~/uploads/clothes/@Model.Image" />
+                    <h6 class="card-title">@Model.Name</h6>
+                </a>
+            </div>
+        </div>
+        <hr />
+        <p class="card-text">@Model.Description</p>
+    </div>
+    <div class="card-footer">
+        @Model.Cost.ToString("c")
+        @if (Model.PromoutionPercent > 0)
+        {
+            <p style="color:red">скидка @((Model.Cost * ((decimal)Model.PromoutionPercent / 100)).ToString("c")) !</p>
+        }
+    </div>
+</div>

@@ -1,18 +1,26 @@
-﻿@model ClothesStore.WebUI.Models.Clothes.ClothesCategoryView 
-@{ 
+﻿@model ClothesStore.WebUI.Models.ViewModels.CategoryViewModel
+@{
     Layout = "_Layout";
 }
 
-<h1>@Model.RusCategory</h1>
-
-@foreach (var elem in Model.Types)
-{
-    <div class="">
-        <a asp-controller="Clothes" 
-           asp-action="ClothesByTypeAndCategory" 
-           asp-route-category="@Model.Category" 
-           asp-route-type="@elem.Name">
-            @elem.Name
-        </a>
+<h1>@Model.Category</h1>
+@if (Context.CheckManagerPrivilegies()) {
+<a asp-action="CreateType" asp-controller="Type" asp-route-returnUrl="@Context.Request.PathAnQuery()">Додати тип</a>
+}
+<hr />
+<div class="row">
+    @foreach (var elem in Model.Types)
+    {
+    <div class="card col-3">
+        <img class="card-img-bottom" src="~/uploads/types/@elem.ImageName" />
+        <div class="card-body">
+            <a class="" asp-controller="Clothes"
+               asp-action="ClothesList"
+               asp-route-category="@Model.Category"
+               asp-route-type="@elem.Name">
+                @elem.Name
+            </a>
+        </div>
     </div>
- }
+    }
+</div>

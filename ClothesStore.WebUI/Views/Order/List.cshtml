@@ -1,0 +1,50 @@
+﻿@model IEnumerable<Order>
+
+@{ 
+
+} 
+@if (Model.Count() > 0)
+{
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th>Name</th>
+            <th>Zip</th>
+            <th colspan="2">Details</th>
+            <th></th>
+        </tr>
+        @foreach (var o in Model)
+        {
+            <tr>
+                <td>
+                    @o.Client.PhoneNumber
+                </td>
+                <td>
+                    @o.ShipAddress.PostalCode
+                </td>
+                <th>Product</th>
+                <th>Quantity</th>
+                <td>
+                    <form asp-action="MarkShipped" method="post">
+                        <input type="hidden" name="id" value="@o.Id" />
+                        <button type="submit" class="btn btn-sm btn-danger">
+                            Ship
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            @foreach (var line in o.ClothesOrders)
+            {
+                <tr>
+                    <td colspan="2"></td>
+                    <td>@line.ClothesUnit.Clothes.Name</td>
+                    <td>@line.Count</td>
+                    <td></td>
+                </tr>
+            }
+        }
+    </table>
+}
+else
+{
+    <div class="text-center">No Unshipped Orders</div>
+}

@@ -1,40 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ClothesStore.Domain.Entities
 {
     public enum PaymentMethod
     {
-        InGet,
-        BeforeGet
+        Отримання,
+        Передоплата
     }
-    public class Order:TEntity
+    public class Order : TEntity
     {
+        [System.ComponentModel.DisplayName("Метод оплати")]
         public PaymentMethod PayMethod { get; set; }
-        
+
         [DataType(DataType.Date)]
+        [System.ComponentModel.DisplayName("Поточний час замовлення")]
         public DateTime DateOfOrder { get; set; } = DateTime.Now;
 
         [DataType(DataType.Date)]
+        [System.ComponentModel.DisplayName("Примірний час отримання")]
         public DateTime ShipDate { get; set; }
-        
-        public bool IsPaid { get; set; } = false;
-        
-        public Client Client { get; set; }
-        
-        public Manager Manager { get; set; }
-        
+
+        [System.ComponentModel.DisplayName("Клієнт")]
+        public int ClientId { get; set; }
+        [System.ComponentModel.DisplayName("Менеджер")]
+        public int ManagerId { get; set; }
+        public virtual Client Client { get; set; }
+
+        public virtual Manager Manager { get; set; }
+
+        [System.ComponentModel.DisplayName("Адреса")]
         public Address ShipAddress { get; private set; }
-        
-        public IEnumerable<ClothesOrder> ClothesOrders { get; set; }
-        
+
+        public virtual IEnumerable<ClothesOrder> ClothesOrders { get; set; }
+
+        [System.ComponentModel.DisplayName("Відмінено")]
         public bool Canceled { get; set; } = false;
-        
-        public bool Finished { get; set; } = false;
+
+        [System.ComponentModel.DisplayName("Доставку та оплату виконано")]
+        public bool Shiped { get; set; } = false;
 
         public void SetAddress(string postalCode, string city, string shipAddress)
         {

@@ -3,34 +3,50 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - ClothesStore.WebUI</title>
+    <title>@ViewData["Title"] - StyleClothes</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Одяг [STORE_NAME]</a>
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">Одяг STYLE-CLOTHES</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <div class="navbar-collapse collapse d-lg-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Clothes" asp-action="Index" asp-route-category="Men">Для чоловиків</a>
+                            <a class="nav-link text-dark" asp-controller="Clothes" asp-action="Index" asp-route-category="Чоловіки">Для чоловиків</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Clothes" asp-action="Index" asp-route-category="Women">Для жінок</a>
+                            <a class="nav-link text-dark" asp-controller="Clothes" asp-action="Index" asp-route-category="Жінки">Для жінок</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Clothes" asp-action="Index" asp-route-category="Children">Для дітей</a>
+                            <a class="nav-link text-dark" asp-controller="Clothes" asp-action="Index" asp-route-category="Діти">Для дітей</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Clothes" asp-action="Privacy">Конакти</a>
+                            <a class="nav-link text-dark" asp-controller="Clothes" asp-action="Privacy">Конакти</a>
                         </li>
                     </ul>
+                    <div class="nav-item">
+                        <a class="nav-link btn btn-primary text-light" asp-area="" asp-controller="Cart" asp-action="Index" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAnQuery()">Корзина</a>
+                    </div>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <p>@User.Identity.Name</p>
+
+                        <form method="post" asp-controller="Account" asp-action="Logout">
+                            <input type="submit" value="Выход" />
+                        </form>
+                    }
+                    else
+                    {
+                        <a class="nav-link" asp-controller="Account" asp-action="Login">Вход</a>
+                        <a class="nav-link"  asp-controller="Account" asp-action="Register">Регистрация</a>
+                    }
                 </div>
             </div>
         </nav>

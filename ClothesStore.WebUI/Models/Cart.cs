@@ -1,8 +1,6 @@
 ﻿using ClothesStore.Domain.Entities;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace ClothesStore.WebUI.Models
 {
@@ -12,20 +10,22 @@ namespace ClothesStore.WebUI.Models
 
         public virtual void AddItem(ClothesMark product, int quantity)
         {
-            ClothesOrder line = lineCollection.Where(p => p.ClothesUnit.ClothesId== product.ClothesId && p.ClothesUnit.SizeId==product.SizeId)
+            var items = lineCollection.Select(p => new { p.ClothesUnit, p.Id });
+
+            var line = items.Where(p => p.ClothesUnit.ClothesId == product.ClothesId && p.ClothesUnit.SizeId == product.SizeId)
                 .FirstOrDefault();
             if (line == null)
             {
                 lineCollection.Add(new ClothesOrder
                 {
                     ClothesUnit = product,
-                    CostPerSingle = product.Cost,
+                    CostPerSingle = product.Clothes.Cost,
                     Count = quantity
                 });
             }
             else
             {
-                line.Count += 1;
+                lineCollection.FirstOrDefault(e => e.Id == line.Id).Count += 1;
             }
         }
 

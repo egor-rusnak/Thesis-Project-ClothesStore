@@ -1,12 +1,9 @@
 ﻿using ClothesStore.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ClothesStore.Infrastructure.Data
 {
-    public class ApplicationDbContext:DbContext
+    public class ApplicationDbContext : DbContext
     {
         public virtual DbSet<Clothes> Clothes { get; set; }
         public virtual DbSet<ClothesMark> ClothesMarks { get; set; }
@@ -17,18 +14,18 @@ namespace ClothesStore.Infrastructure.Data
         public virtual DbSet<Manager> Managers { get; set; }
         public virtual DbSet<ClothesOrder> ClothesOrders { get; set; }
         public virtual DbSet<ClothesType> ClothesTypes { get; set; }
-        
-        
-        
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) :base(options)
+
+
+
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
             //Database.EnsureCreated();
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<ClothesMark>().HasKey(e => new { e.ClothesId, e.SizeId });
-            modelBuilder.Entity<ClothesOrder>().HasKey(o => new { o.ClothesUnitId, o.OrderId });
-            modelBuilder.Entity<ClothesType>().HasKey(p => new { p.Destinantion, p.Name });
+            modelBuilder.Entity<ClothesMark>().HasIndex(e => new { e.ClothesId, e.SizeId }).IsUnique();
+            modelBuilder.Entity<ClothesOrder>().HasIndex(o => new { o.ClothesUnitId, o.OrderId }).IsUnique();
+            modelBuilder.Entity<ClothesType>().HasIndex(p => new { p.Destinantion, p.Name }).IsUnique();
         }
     }
 }

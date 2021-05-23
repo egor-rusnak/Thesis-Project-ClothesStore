@@ -1,0 +1,35 @@
+﻿@model Order 
+
+<h2>Check out now</h2> 
+<p>Please enter your details, and we'll ship your goods right away!</p>
+<div asp-validation-summary="All" class="text-danger"></div>
+<form asp-action="Checkout" method="post">
+    <h3>Ship to</h3>
+    <div class="form-group">
+        <label>Your phone:</label>
+        <input asp-for="Client.PhoneNumber" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Pay Method:</label>
+        <select asp-for="PayMethod" class="form-control">
+            <option value="0">Before get</option>
+            <option value="1">In get</option>
+        </select>
+    </div>
+    <h3>Address</h3>
+    <div class="form-group">
+        <label>City:</label>
+        <input asp-for="ShipAddress.City" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Postal code:</label>
+        <input asp-for="ShipAddress.PostalCode" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Ship address:</label>
+        <input asp-for="ShipAddress.ShipAddress" class="form-control" />
+    </div>
+    <div class="text-center">
+        <input class="btn btn-primary" type="submit" value="Complete Order" />
+    </div>
+</form>

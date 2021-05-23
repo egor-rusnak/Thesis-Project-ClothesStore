@@ -1,8 +1,8 @@
-﻿using ClothesStore.WebUI.Models;
+﻿using ClothesStore.Domain.Interfaces;
+using ClothesStore.WebUI.Models;
+using ClothesStore.WebUI.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,15 +12,24 @@ namespace ClothesStore.WebUI.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ITopClothesService _topService;
+        private readonly IClothesService _clothes;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ITopClothesService topService, IClothesService clothes)
         {
             _logger = logger;
+            _topService = topService;
+            _clothes = clothes;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var viewModel = new HomeIndexViewModel()
+            {
+                Carousel = _topService.GetPopularByLastMonth(5).Select(e => ClothesViewModel.CreateClothesView(e)),
+                DiscountProducts = (await _clothes.GetTopDiscountClothes(5)).Select(e => ClothesViewModel.CreateClothesView(e))
+            };
+            return View(viewModel);
         }
 
         public IActionResult Privacy()

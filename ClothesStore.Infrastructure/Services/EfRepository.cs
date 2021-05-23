@@ -3,15 +3,13 @@ using ClothesStore.Domain.Interfaces;
 using ClothesStore.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ClothesStore.Infrastructure.Services
 {
-    public class EfRepository<T> : IAsyncRepository<T> where T:TEntity
+    public class EfRepository<T> : IAsyncRepository<T> where T : TEntity
     {
         private readonly ApplicationDbContext _context;
         private readonly DbSet<T> _set;
@@ -37,14 +35,16 @@ namespace ClothesStore.Infrastructure.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<T>> GetAll()
+        public async Task<IQueryable<T>> GetAll()
         {
-            return await _set.ToListAsync();
+            return _set.AsQueryable();
         }
 
-        public async Task<IEnumerable<T>> GetBy(Expression<Func<T, bool>> predicate)
+
+
+        public async Task<IQueryable<T>> GetBy(Expression<Func<T, bool>> predicate)
         {
-            var elems = await _set.Where(predicate).ToListAsync();
+            var elems = _set.Where(predicate).AsQueryable();
 
             return elems;
         }
@@ -53,6 +53,7 @@ namespace ClothesStore.Infrastructure.Services
         {
             return await _set.FirstOrDefaultAsync(e => e.Id == id);
         }
+
 
         public async Task<T> Update(T entity)
         {

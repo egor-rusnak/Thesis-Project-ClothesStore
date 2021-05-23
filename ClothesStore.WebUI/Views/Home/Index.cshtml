@@ -1,8 +1,50 @@
-﻿@{
+﻿@model HomeIndexViewModel
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h1>Самые продаваемые</h1>
+@if (Model.Carousel.Any()) { 
+<div id="topProducts" class="carousel slide" style="background-color:azure; height:15em;" data-ride="carousel">
+    <ul class="carousel-indicators">
+        <li class="bg-dark" data-target="#topProducts" data-slide-to="0" class="active"></li>
+        @for (int i = 1; i < Model.Carousel.Count();i++) {
+        <li class="bg-dark" data-target="#topProducts" data-slide-to="@i"></li>
+        }
+    </ul>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <div class="row">
+                <img class="col-2" src="~/uploads/clothes/@Model.Carousel.FirstOrDefault().Image" />
+                <div class="col-3"><p>Cost: @Model.Carousel.FirstOrDefault().Cost</p></div>
+            </div>
+        </div>
+        @foreach (var elem in Model.Carousel.Skip(1))
+        {
+        <div class="carousel-item">
+            <div class="row">
+                <img class="col-2" src="~/uploads/clothes/@elem.Image" />
+                <div class="col-3"><p>Cost: @elem.Cost</p></div>
+            </div>
+        </div>
+        }
+    </div>
+    <a class="carousel-control-prev" href="#topProducts" data-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+    </a>
+    <a class="carousel-control-next" href="#topProducts" data-slide="next">
+        <span class="carousel-control-next-icon"></span>
+    </a>
+</div>
+}
+else { <h3>Не має проданої одежи :(</h3>}
+
+<h1>Скидки</h1>
+<div class="row">
+    @foreach (var elem in Model.DiscountProducts)
+    {
+        <div class="col-3">
+            @Html.Partial("ClothesItem", elem)
+         </div>
+    }
 </div>

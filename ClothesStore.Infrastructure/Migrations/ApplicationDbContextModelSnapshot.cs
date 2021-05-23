@@ -41,6 +41,12 @@ namespace ClothesStore.Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Clients");
@@ -56,11 +62,14 @@ namespace ClothesStore.Infrastructure.Migrations
                     b.Property<int?>("BrandId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ClothesTypeDestinantion")
+                    b.Property<int>("ClothesTypeId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ClothesTypeName")
-                        .HasColumnType("nvarchar(100)");
+                    b.Property<decimal>("Cost")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("ImageName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Material")
                         .HasMaxLength(100)
@@ -77,44 +86,45 @@ namespace ClothesStore.Infrastructure.Migrations
 
                     b.HasIndex("BrandId");
 
-                    b.HasIndex("ClothesTypeDestinantion", "ClothesTypeName");
+                    b.HasIndex("ClothesTypeId");
 
                     b.ToTable("Clothes");
                 });
 
             modelBuilder.Entity("ClothesStore.Domain.Entities.ClothesMark", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
                     b.Property<int>("ClothesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CountInStock")
                         .HasColumnType("int");
 
                     b.Property<int>("SizeId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<int>("CountInStock")
-                        .HasColumnType("int");
-
-                    b.HasKey("ClothesId", "SizeId");
+                    b.HasKey("Id");
 
                     b.HasIndex("SizeId");
+
+                    b.HasIndex("ClothesId", "SizeId")
+                        .IsUnique();
 
                     b.ToTable("ClothesMarks");
                 });
 
             modelBuilder.Entity("ClothesStore.Domain.Entities.ClothesOrder", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
                     b.Property<int>("ClothesUnitId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ClothesUnitClothesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ClothesUnitSizeId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("CostPerSingle")
@@ -123,31 +133,41 @@ namespace ClothesStore.Infrastructure.Migrations
                     b.Property<int>("Count")
                         .HasColumnType("int");
 
-                    b.HasKey("ClothesUnitId", "OrderId");
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("OrderId");
 
-                    b.HasIndex("ClothesUnitClothesId", "ClothesUnitSizeId");
+                    b.HasIndex("ClothesUnitId", "OrderId")
+                        .IsUnique();
 
                     b.ToTable("ClothesOrders");
                 });
 
             modelBuilder.Entity("ClothesStore.Domain.Entities.ClothesType", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
                     b.Property<int>("Destinantion")
                         .HasColumnType("int");
+
+                    b.Property<string>("ImageName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
+                    b.HasKey("Id");
 
-                    b.Property<string>("imgSrc")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Destinantion", "Name");
+                    b.HasIndex("Destinantion", "Name")
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL");
 
                     b.ToTable("ClothesTypes");
                 });
@@ -174,19 +194,13 @@ namespace ClothesStore.Infrastructure.Migrations
                     b.Property<bool>("Canceled")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("ClientId")
+                    b.Property<int>("ClientId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DateOfOrder")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("Finished")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsPaid")
-                        .HasColumnType("bit");
-
-                    b.Property<int?>("ManagerId")
+                    b.Property<int>("ManagerId")
                         .HasColumnType("int");
 
                     b.Property<int>("PayMethod")
@@ -194,6 +208,9 @@ namespace ClothesStore.Infrastructure.Migrations
 
                     b.Property<DateTime>("ShipDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("Shiped")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -227,7 +244,9 @@ namespace ClothesStore.Infrastructure.Migrations
 
                     b.HasOne("ClothesStore.Domain.Entities.ClothesType", "ClothesType")
                         .WithMany("Clothes")
-                        .HasForeignKey("ClothesTypeDestinantion", "ClothesTypeName");
+                        .HasForeignKey("ClothesTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Brand");
 
@@ -255,15 +274,15 @@ namespace ClothesStore.Infrastructure.Migrations
 
             modelBuilder.Entity("ClothesStore.Domain.Entities.ClothesOrder", b =>
                 {
-                    b.HasOne("ClothesStore.Domain.Entities.Order", "Order")
-                        .WithMany("ClothesOrders")
-                        .HasForeignKey("OrderId")
+                    b.HasOne("ClothesStore.Domain.Entities.ClothesMark", "ClothesUnit")
+                        .WithMany()
+                        .HasForeignKey("ClothesUnitId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ClothesStore.Domain.Entities.ClothesMark", "ClothesUnit")
-                        .WithMany()
-                        .HasForeignKey("ClothesUnitClothesId", "ClothesUnitSizeId")
+                    b.HasOne("ClothesStore.Domain.Entities.Order", "Order")
+                        .WithMany("ClothesOrders")
+                        .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -276,11 +295,15 @@ namespace ClothesStore.Infrastructure.Migrations
                 {
                     b.HasOne("ClothesStore.Domain.Entities.Client", "Client")
                         .WithMany()
-                        .HasForeignKey("ClientId");
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("ClothesStore.Domain.Entities.Manager", "Manager")
                         .WithMany()
-                        .HasForeignKey("ManagerId");
+                        .HasForeignKey("ManagerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.OwnsOne("ClothesStore.Domain.Entities.Address", "ShipAddress", b1 =>
                         {

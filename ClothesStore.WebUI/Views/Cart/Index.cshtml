@@ -1,36 +1,50 @@
-﻿@model ClothesStore.WebUI.Models.Cart
+﻿@model ClothesStore.WebUI.Models.ViewModels.CartIndexViewModel
 
-
-<h1>Cart</h1>
-<table>
+<h2>Ваша корзина</h2>
+<table class="table table-bordered table-striped">
     <thead>
-    <tr>
-        <td>
-            Item
-        </td>   
-        <td>
-            Count
-        </td>
-        <td>
-            Cost
-        </td>
-    </tr>
+        <tr>
+            <th>Кількість</th>
+            <th>Одяг</th>
+            <th class="text-right">Ціна</th>
+            <th class="text-right">Всього</th>
+        </tr>
     </thead>
     <tbody>
-        @foreach (var elem in Model.Lines)
+        @foreach(var line in Model.Cart.Lines)
         {
-            <tr>
-                <td>
-                    @elem.ClothesUnit.Clothes.Name
-                </td>
-                <td>
-                    @elem.Count
-                </td>
-                <td>
-                    @(elem.CostPerSingle*elem.Count)
-                </td>
-            </tr>
+        <tr>
+            <td class="text-center"> @line.Count</td>
+            <td class="text-left"> @line.ClothesUnit.Clothes.Name</td>
+            <td class="text-right"> @line.CostPerSingle</td>
+            <td class="text-right"> @(line.Count*(line.CostPerSingle-line.CostPerSingle*((decimal)line.ClothesUnit.Clothes.PromoutionPercent/100)))</td>
+            <td>
+                <form asp-action="RemoveFromCart" method="post">
+                    <input type="hidden" name="sizeId" value="@line.ClothesUnit.SizeId"/>
+                    <input type="hidden" name="clothesId" value="@line.ClothesUnit.ClothesId"/>
+                    <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
+                    <button type="submit" class="btn btn-sm btn-danger">
+                        Вилучити
+                    </button>
+                </form>
+            </td>
+        </tr>
         }
     </tbody>
-</table>
-<h1>SUM: @Model.ComputeTotalValue()</h1>
+    <tfoot>
+        <tr>
+            <td colspan="3" class="text-right" >За замовлення:</td>
+            <td class="text-right">
+                @Model.Cart.ComputeTotalValue()
+            </td>
+        </tr>
+    </tfoot>
+</table> 
+<div class="text-center">
+    <a class="btn btn-primary" href="@Model.ReturnUrl">Продовжити покупку</a>
+    @if (Model.Cart.Lines.Any())
+    {<a class="btn btn-primary" asp-action="Checkout" asp-controller="Order">
+        Замовити!
+    </a>}
+
+</div>
