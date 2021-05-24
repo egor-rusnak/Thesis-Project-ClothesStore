@@ -27,26 +27,28 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="Clothes" asp-action="Index" asp-route-category="Діти">Для дітей</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Clothes" asp-action="Privacy">Конакти</a>
-                        </li>
                     </ul>
-                    <div class="nav-item">
-                        <a class="nav-link btn btn-primary text-light" asp-area="" asp-controller="Cart" asp-action="Index" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAnQuery()">Корзина</a>
-                    </div>
+
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <p>@User.Identity.Name</p>
-
+                        @if(Context.CheckFullPrivilegies()) 
+                <a class="nav-link" asp-controller="Account" asp-action="Register">Регистрация</a>
+                        <a class="nav-link " asp-controller="Account" asp-action="Index">@User.Identity.Name.Split('@')[0]</a>
+                        
                         <form method="post" asp-controller="Account" asp-action="Logout">
-                            <input type="submit" value="Выход" />
+                            <input class="nav-link btn btn-dark" type="submit" value="Вийти" />
                         </form>
                     }
                     else
                     {
                         <a class="nav-link" asp-controller="Account" asp-action="Login">Вход</a>
-                        <a class="nav-link"  asp-controller="Account" asp-action="Register">Регистрация</a>
+                        <a class="nav-link" asp-controller="Account" asp-action="Register">Регистрация</a>
                     }
+                    
+
+                    <div class="nav-item" style="margin-left:0.5em;">
+                        <a class="nav-link btn btn-primary text-light" asp-area="" asp-controller="Cart" asp-action="Index" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAnQuery()">Корзина</a>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -58,7 +60,7 @@
     </div>
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2021 - ClothesStore.WebUI - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2021 - STYLE-CLOTHES - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

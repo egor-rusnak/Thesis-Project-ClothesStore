@@ -3,33 +3,35 @@
 @{
     ViewData["Title"] = @Model.Entity.Name;
 }
+<h4>@Model.Entity.Name</h4>
+<hr />
+<div class="row">
 
-<div>
-    <h4>@Model.Entity.Name</h4>
-    <hr />
-    <img src="~/uploads/clothes/@Model.Entity.Image"/>
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Entity.Cost)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Entity.Cost)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Entity.Description)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Entity.Sizes)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Entity.Sizes)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Entity.Description)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Entity.Id">Edit</a> |
-    <a href="@Model.ReturnUrl">Back</a>
-</div>
+    <div class="col-3">
+        <img src="~/uploads/clothes/@Model.Entity.Image" />
+    </div>
+    <div class="col-6">
+        <p>@Model.Entity.Description</p>
+        <p>@Model.Entity.Cost.ToString("c")</p>
+    </div>
+    <div class="col-6">
+        @if (Model.Entity.Sizes.Count() > 0) { 
+        <form asp-action="AddToCart"
+          asp-controller="Cart" method="Post">
+            <p>Оберіть розмір для замовлення: </p>
+            @Html.DropDownList("sizeId", new SelectList(Model.Entity.Sizes, "SizeId", "SizeMark"))
+            <input type="hidden" asp-for="Entity.Id" />
+            <input type="hidden" asp-for="ReturnUrl"/>
+        </form>
+        }
+            else
+            {
+                <h6>Цього товару немаэ на складі!</h6>
+            }
+    </div>
+    <div>
+        @if (Context.CheckManagerPrivilegies()) { 
+            <a asp-action="Edit" asp-route-id="@Model.Entity.Id">Edit |</a>
+        }
+        <a href="@Model.ReturnUrl">Back</a>
+    </div>

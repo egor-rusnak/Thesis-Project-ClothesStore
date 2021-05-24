@@ -12,11 +12,13 @@ namespace ClothesStore.WebUI.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly ClothesStore.WebUI.Services.IdentityService _service;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, Services.IdentityService service)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _service = service;
         }
         [HttpGet]
         [AllowAnonymous]
@@ -35,20 +37,10 @@ namespace ClothesStore.WebUI.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = new User { Email = model.Email, UserName = model.Email, PhoneNumber = model.PhoneNumber };
-                var result = await _userManager.CreateAsync(user, model.Password);
-                if (model.Role > 0)
-                {
-                    if (HttpContext.CheckFullPrivilegies())
-                        await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim("access", model.Role.ToString()));
-                }
-                else
-                    await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim("access", model.Role.ToString()));
-
+                var result = await _service.RegisterUser(model, false, this.HttpContext);
 
                 if (result.Succeeded)
                 {
-                    await _signInManager.SignInAsync(user, false);
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -79,8 +71,7 @@ namespace ClothesStore.WebUI.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result =
-                    await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
+                var result = await _service.LogIn(model);
                 if (result.Succeeded)
                 {
                     // проверяем, принадлежит ли URL приложению

@@ -92,24 +92,6 @@ namespace ClothesStore.WebUI
                     pattern: "{controller=Clothes}/{action=ClothesList}/{category?}/{type?}"
                     );
             });
-
-            /*  StartAppSerivces(app.ApplicationServices);*/
         }
-        /*  private void StartAppSerivces(IServiceProvider provider)
-          {
-              var userMn=provider.GetRequiredService<UserManager<User>>();
-              var resultUsers = userMn.GetUsersForClaimAsync(new System.Security.Claims.Claim("access", Models.Identity.Role.Admin.ToString())).Result;
-              if (resultUsers.Count == 0)
-              {
-                  User user = new User { Email = "Admin1234@mail.com", UserName = "Admin1234", PhoneNumber = "35423321" };
-                  var result = userMn.CreateAsync(user, "n123321N").Result;
-                  var resultClaim= userMn.AddClaimAsync(user, new System.Security.Claims.Claim("access", Models.Identity.Role.Admin.ToString())).Result;
-                  if (result.Succeeded)
-                      Console.WriteLine("Created a admin user for first time with username: " + user.UserName + " and pass: n123321N");
-
-                  if (resultClaim.Succeeded)
-                      Console.WriteLine("Added admin claim for it!");
-              }
-          }*/
     }
 }

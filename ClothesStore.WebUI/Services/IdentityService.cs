@@ -4,16 +4,11 @@ using ClothesStore.WebUI.Extensions;
 using ClothesStore.WebUI.Models.Identity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using System;
 using System.Threading.Tasks;
 
 namespace ClothesStore.WebUI.Services
 {
-    public enum Role
-    {
-        User = 0,
-        Admin = 1,
-        Manager = 2
-    }
     public class IdentityService
     {
         private readonly UserManager<User> _userManager;
@@ -26,7 +21,6 @@ namespace ClothesStore.WebUI.Services
             _signInManager = signInManager;
             _userManager = userManager;
         }
-
 
         public async Task<IdentityResult> RegisterUser(RegisterViewModel model, bool signIn, HttpContext context)
         {
@@ -43,6 +37,18 @@ namespace ClothesStore.WebUI.Services
 
         public async Task<SignInResult> LogIn(LoginViewModel model)
         {
+            var resultUsers = await _userManager.GetUsersForClaimAsync(new System.Security.Claims.Claim("access", Role.Admin.ToString()));
+            if (resultUsers.Count == 0)
+            {
+                User user = new User { Email = "Admin1234@mail.com", UserName = "Admin1234", PhoneNumber = "35423321" };
+                var created =await  _userManager.CreateAsync(user, "n123321N");
+                var resultClaim = await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim("access", Role.Admin.ToString()));
+                if (created.Succeeded)
+                    Console.WriteLine("Created a admin user for first time with username: " + user.UserName + " and pass: n123321N");
+
+                if (resultClaim.Succeeded)
+                    Console.WriteLine("Added admin claim for it!");
+            }
             var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
             return result;
         }

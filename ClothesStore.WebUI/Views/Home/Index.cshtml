@@ -16,7 +16,7 @@
         <div class="carousel-item active">
             <div class="row">
                 <img class="col-2" src="~/uploads/clothes/@Model.Carousel.FirstOrDefault().Image" />
-                <div class="col-3"><p>Cost: @Model.Carousel.FirstOrDefault().Cost</p></div>
+                <div class="col-3 justify-content-center"><p>За ціною @Model.Carousel.FirstOrDefault().Cost !</p></div>
             </div>
         </div>
         @foreach (var elem in Model.Carousel.Skip(1))

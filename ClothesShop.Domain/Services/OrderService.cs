@@ -1,40 +1,48 @@
 ﻿using ClothesStore.Domain.Entities;
 using ClothesStore.Domain.Interfaces;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ClothesStore.Domain.Services
 {
     public class OrderService : IOrderService
     {
-        public Task AddOrder(Order order)
+        private readonly IAsyncRepository<Order> _orders;
+
+        public OrderService(IAsyncRepository<Order> orders)
         {
-            throw new NotImplementedException();
+            _orders = orders;
         }
 
-        public Task CancelOrder(int id)
+        public async Task AddOrder(Order order)
         {
-            throw new NotImplementedException();
+            await _orders.Create(order);
         }
 
-        public Task ChechoutOrder(int id)
+        public async Task CancelOrder(int id)
         {
-            throw new NotImplementedException();
+            var order = await _orders.GetById(id);
+            order.Canceled = true;
+            await _orders.Update(order);
         }
 
-        public Task GetLastClientOrders(int count, int clientId)
+        public async Task<IEnumerable<Order>> GetLastClientOrders(int count, int clientId)
         {
-            throw new NotImplementedException();
+            var orders = (await _orders.GetBy(e => e.ClientId == clientId)).Take(count);
+            return orders;
         }
 
-        public Task RemoveOrder(Order order)
+        public async Task RemoveOrder(int id)
         {
-            throw new NotImplementedException();
+            await _orders.Delete(id);
         }
 
-        public Task UpdateOrder(Order order)
+        public async Task UpdateOrder(Order order)
         {
-            throw new NotImplementedException();
+            await _orders.Update(order);
         }
     }
 }

@@ -33,11 +33,7 @@ namespace ClothesStore.Domain.Services
                 var clothes = orders.SelectMany(e => e.ClothesOrders);
                 var resClothes = clothes.Select(e => e.ClothesUnit);
                 var resresClothes = resClothes.Select(e => e.Clothes).ToList();
-                resresClothes.Sort((e1, e2) => e1.Id.CompareTo(e2.Id));
-                clothesList = resresClothes.Distinct().ToList();
-                //TODO: remove it after work
-                if (clothesList.Count() == 0)
-                    clothesList = scope.ServiceProvider.GetRequiredService<IClothesRepository>().GetClothesWithSizesAndBrands().Result.ToList();
+                resresClothes.GroupBy(e => e.Id).OrderByDescending(e=>e.Count());
             }
         }
 

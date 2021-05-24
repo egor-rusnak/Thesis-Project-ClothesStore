@@ -40,13 +40,14 @@ namespace ClothesStore.WebUI.Controllers
         public async Task<IActionResult> Details(int id, string returnUrl)
         {
             var clothes = await _clothesStore.GetById(id);
-
-            return View(
-                new EditViewModel<ClothesViewModel>
-                {
-                    ReturnUrl = returnUrl,
-                    Entity = ClothesViewModel.CreateClothesView(clothes)
-                });
+            var viewModel = new EditViewModel<ClothesViewModel>
+            {
+                ReturnUrl = returnUrl,
+                Entity = ClothesViewModel.CreateClothesView(clothes)
+            };
+            ViewBag.Sizes = viewModel.Entity.Sizes;
+            return View(viewModel);
+                
         }
 
 
@@ -66,7 +67,7 @@ namespace ClothesStore.WebUI.Controllers
             }
             catch (ArgumentException)
             {
-                return View("Error", new ClothesStore.WebUI.Models.ErrorViewModel() { RequestId = "ERROROR" });
+                return View("Error", new Models.ErrorViewModel() { RequestId = "ERROROR" });
             }
         }
 
