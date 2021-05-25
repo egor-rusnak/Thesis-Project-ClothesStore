@@ -15,7 +15,7 @@
         <p>@Model.Entity.Cost.ToString("c")</p>
     </div>
     <div class="col-6">
-        @if (Model.Entity.Sizes.Count() > 0) { 
+        @if (Model.Entity.Sizes?.Count() > 0) { 
         <form asp-action="AddToCart"
           asp-controller="Cart" method="Post">
             <p>Оберіть розмір для замовлення: </p>

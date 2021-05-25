@@ -52,7 +52,7 @@ namespace ClothesStore.WebUI
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("Admin", p => p.RequireClaim("access", Role.Admin.ToString()));
-                options.AddPolicy("Manager", p => p.RequireClaim("access", new[] { Role.Manager.ToString(), Role.Admin.ToString()}));
+                options.AddPolicy("Manager", p => p.RequireClaim("access", new[] { Role.Manager.ToString(), Role.Admin.ToString() }));
                 options.AddPolicy("User", p => p.RequireClaim("access", Role.User.ToString()));
             });
             services.AddLogging();

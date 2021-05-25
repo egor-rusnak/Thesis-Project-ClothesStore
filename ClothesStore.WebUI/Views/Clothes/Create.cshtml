@@ -13,7 +13,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Entity.Brand" class="control-label"></label>
-                @Html.DropDownListFor(e=>e.Entity.BrandId,Model.Brands as SelectList)
+                @Html.DropDownListFor(e=>e.Entity.BrandId, new SelectList(Model.Brands,"Id","Name"))
                 <span asp-validation-for="Entity.Brand" class="text-danger"></span>
             </div>
             <div class="form-group">

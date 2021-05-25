@@ -20,7 +20,7 @@ namespace ClothesStore.Domain.Services
 
         public async Task AddOrder(Order order, IEnumerable<ClothesOrder> list)
         {
-            var marks =await _store.GetBy(e => list.Any(m => m.ClothesUnitId == e.Id));
+            var marks = await _store.GetBy(e => list.Any(m => m.ClothesUnitId == e.Id));
             var checkList = marks.Select(e => new { StoreCount = e.CountInStock, CountToGet = list.FirstOrDefault(m => e.Id == m.ClothesUnitId).Count });
             if (checkList.Any(e => e.StoreCount < e.CountToGet))
                 throw new ArgumentException("Не достатньо речей на складі!");

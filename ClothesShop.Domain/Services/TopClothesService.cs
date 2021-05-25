@@ -33,7 +33,7 @@ namespace ClothesStore.Domain.Services
                 var clothes = orders.SelectMany(e => e.ClothesOrders);
                 var resClothes = clothes.Select(e => e.ClothesUnit);
                 var resresClothes = resClothes.Select(e => e.Clothes).ToList();
-                resresClothes.GroupBy(e => e.Id).OrderByDescending(e=>e.Count());
+                resresClothes.GroupBy(e => e.Id).OrderByDescending(e => e.Count());
             }
         }
 

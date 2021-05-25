@@ -21,7 +21,10 @@
                     {
                         <form model="@brand" method="post">
                             @brand.BrandName
-                            <input type="checkbox" value="@brand.Checked" />
+                            @if(brand.Checked){
+                                <input type="checkbox" value="@brand.BrandId" checked />    
+                            }
+                                else { <input type="checkbox" value="@brand.BrandId" />}
                         </form>
                     }
                 }

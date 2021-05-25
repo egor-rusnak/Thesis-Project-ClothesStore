@@ -1,6 +1,5 @@
 ﻿using ClothesStore.Domain.Entities;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace ClothesStore.WebUI.Models.ViewModels
 {
@@ -19,9 +18,9 @@ namespace ClothesStore.WebUI.Models.ViewModels
             {
                 Id = clothes.Id,
                 Name = clothes.Name,
-               // Description = clothes.Material + " " + clothes.Brand?.Name + " " + clothes.Name,
+                // Description = clothes.Material + " " + clothes.Brand?.Name + " " + clothes.Name,
                 Cost = clothes.Cost,
-            //    Sizes = clothes.ClothesMarksInStock.Where(e=>e.CountInStock>0).Select(e => new SizeViewModel { SizeId = e.Size.Id, SizeMark = e.Size.Mark }),
+                //    Sizes = clothes.ClothesMarksInStock.Where(e=>e.CountInStock>0).Select(e => new SizeViewModel { SizeId = e.Size.Id, SizeMark = e.Size.Mark }),
                 Image = clothes.ImageName,
                 PromoutionPercent = clothes.PromoutionPercent
             };

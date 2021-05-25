@@ -30,9 +30,9 @@ namespace ClothesStore.WebUI.Services
             var result = await _userManager.CreateAsync(user, model.Password);
             if (model.Role > 0 && context.CheckFullPrivilegies())
                 await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim("access", model.Role.ToString()));
-            if(model.Role==Role.Manager)
+            if (model.Role == Role.Manager)
             {
-                var manager =await  _managers.Create(new Manager());
+                var manager = await _managers.Create(new Manager());
 
                 user.IdForExternalDb = manager.Id;
                 await _userManager.UpdateAsync(user);
@@ -56,7 +56,7 @@ namespace ClothesStore.WebUI.Services
             if (resultUsers.Count == 0)
             {
                 User user = new User { Email = "Admin1234@mail.com", UserName = "Admin1234", PhoneNumber = "35423321" };
-                var created =await  _userManager.CreateAsync(user, "n123321N");
+                var created = await _userManager.CreateAsync(user, "n123321N");
                 var resultClaim = await _userManager.AddClaimAsync(user, new System.Security.Claims.Claim("access", Role.Admin.ToString()));
                 if (created.Succeeded)
                     Console.WriteLine("Created a admin user for first time with username: " + user.UserName + " and pass: n123321N");

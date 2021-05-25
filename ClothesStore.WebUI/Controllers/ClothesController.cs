@@ -1,13 +1,14 @@
 ﻿using ClothesStore.Domain.Entities;
 using ClothesStore.Domain.Interfaces;
+using ClothesStore.WebUI.Extensions;
 using ClothesStore.WebUI.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,12 +18,14 @@ namespace ClothesStore.WebUI.Controllers
     {
         private readonly IClothesService _clothes;
         private readonly IAsyncRepository<Clothes> _clothesStore;
+        private readonly IAsyncRepository<Brand> _brands;
         private readonly IWebHostEnvironment _enviroments;
-        public ClothesController(IClothesService clothes, IWebHostEnvironment enviroments, IAsyncRepository<Clothes> clothesStore)
+        public ClothesController(IClothesService clothes, IWebHostEnvironment enviroments, IAsyncRepository<Clothes> clothesStore, IAsyncRepository<Brand> brands)
         {
             _clothes = clothes;
             _enviroments = enviroments;
             _clothesStore = clothesStore;
+            _brands = brands;
         }
         [HttpGet]
         public async Task<IActionResult> Index(string category)
@@ -62,8 +65,9 @@ namespace ClothesStore.WebUI.Controllers
                     CategoryName = category,
                     TypeName = type,
                     Clothes = clothes.Select(e => ClothesViewModel.CreateClothesView(e)),
-                    Brands =clothes.Select(e => e.Brand!=null?new BrandsCheck { BrandId = e.Brand.Id, BrandName = e.Brand.Name, Checked = true }:null).Distinct()
-                });
+                    Brands = clothes.Select(e => new BrandsCheck { BrandId = e.Brand.Id, BrandName = e.Brand.Name, Checked = true })
+                    .GroupBy(e => e.BrandId).Select(e => e.First()).ToList()
+                }) ;
             }
             catch (ArgumentException)
             {
@@ -75,10 +79,12 @@ namespace ClothesStore.WebUI.Controllers
         [HttpGet]
         public async Task<IActionResult> Create(string type, string category, string returnUrl)
         {
+            var brands = await _brands.GetAll();
+            if (!brands.Any()) return RedirectToAction("Error", "Home", new { message = "No brands!" });
             var clothes = new Clothes();
             var clothesTypes = await _clothes.GetClothesTypesByCategory(category);
             clothes.ClothesTypeId = clothesTypes.FirstOrDefault(e => e.Name == type).Id;
-            var model = new CreateViewModel<Clothes>() { Entity = clothes, ReturnUrl = returnUrl };
+            var model = new CreateClothesViewModel() { Entity = clothes, ReturnUrl = returnUrl, Brands=brands };
             return View(model);
         }
 
@@ -88,27 +94,8 @@ namespace ClothesStore.WebUI.Controllers
         {
             if (ModelState.IsValid)
             {
-                
                 var clothes = await _clothesStore.Create(clothesModel.Entity);
-                var files = HttpContext.Request.Form.Files;
-                foreach (var Image in files)
-                {
-                    if (Image != null && Image.Length > 0)
-                    {
-                        var file = Image;
-                        var uploads = Path.Combine(_enviroments.WebRootPath, "uploads\\clothes");
-                        if (file.Length > 0)
-                        {
-                            var fileName = clothes.Id + "_" + clothes.Name + Path.GetExtension(file.FileName);
-                            Console.WriteLine(fileName);
-                            using (var fileStream = new FileStream(Path.Combine(uploads, fileName), FileMode.Create))
-                            {
-                                await file.CopyToAsync(fileStream);
-                                clothes.ImageName = fileName;
-                            }
-                        }
-                    }
-                }
+                await HttpContext.WriteImageClothes(_enviroments, clothesModel);
 
                 await _clothesStore.Update(clothes);
 
@@ -119,6 +106,13 @@ namespace ClothesStore.WebUI.Controllers
         [Authorize(Policy = "Manager")]
         public async Task<IActionResult> Delete(int id, string returnUrl)
         {
+            var clothes =await _clothesStore.GetById(id);
+            try
+            {
+                if (clothes.ImageName != null)
+                    System.IO.File.Delete(Path.Combine("uploads//clothes", clothes.ImageName));
+            }
+            catch (Exception) { }
             await _clothesStore.Delete(id);
             return Redirect(returnUrl);
         }

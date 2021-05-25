@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using ClothesStore.Domain.Entities;
+﻿using ClothesStore.Domain.Entities;
 using ClothesStore.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ClothesStore.WebUI.Controllers
 {
-    [Authorize(Policy ="Admin")]
+    [Authorize(Policy = "Admin")]
     public class SizesController : Controller
     {
         private readonly ApplicationDbContext _context;

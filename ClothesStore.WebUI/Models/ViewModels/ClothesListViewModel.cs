@@ -1,5 +1,4 @@
-﻿using ClothesStore.Domain.Entities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace ClothesStore.WebUI.Models.ViewModels
 {
@@ -14,6 +13,6 @@ namespace ClothesStore.WebUI.Models.ViewModels
     {
         public int BrandId { get; set; }
         public string BrandName { get; set; }
-        public bool Checked { get;set; }
+        public bool Checked { get; set; }
     }
 }

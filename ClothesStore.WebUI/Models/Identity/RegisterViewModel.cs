@@ -17,7 +17,7 @@ namespace ClothesStore.WebUI.Models.Identity
         [Required]
         [Display(Name = "Номер телефону")]
         public string PhoneNumber { get; set; }
-        
+
         [Required]
         [DataType(DataType.Password)]
         [Display(Name = "Пароль")]

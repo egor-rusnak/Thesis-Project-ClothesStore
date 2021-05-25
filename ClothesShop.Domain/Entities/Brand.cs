@@ -1,4 +1,6 @@
-﻿namespace ClothesStore.Domain.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ClothesStore.Domain.Entities
 {
     [System.ComponentModel.DisplayName("Бренд")]
     public class Brand : TEntity

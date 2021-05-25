@@ -6,7 +6,7 @@ namespace ClothesStore.Domain.Entities
 {
     public class Clothes : TEntity
     {
-        [Reqired]
+        [Required]
         [StringLength(500)]
         [System.ComponentModel.DisplayName("Назва одягу")]
         public string Name { get; set; }
@@ -29,7 +29,6 @@ namespace ClothesStore.Domain.Entities
         [Required]
         public decimal Cost { get; set; }
         [System.ComponentModel.DisplayName("Зображення")]
-        [Required]
         public string ImageName { get; set; }
 
     }

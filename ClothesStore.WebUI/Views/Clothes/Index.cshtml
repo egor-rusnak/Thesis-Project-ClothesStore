@@ -22,6 +22,9 @@
                     @elem.Name
                 </a>
             </div>
+            <div class="card-footer">
+                <a asp-action="Delete" asp-controller="Types" asp-route-id="@elem.Id">Вилучити</a>
+            </div>
         </div>
     }
 </div>

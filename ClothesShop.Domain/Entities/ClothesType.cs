@@ -20,7 +20,6 @@ namespace ClothesStore.Domain.Entities
         public ClothesDestinantion Destinantion { get; set; }
 
         [System.ComponentModel.DisplayName("Рисунок для категорії")]
-        [Required]
         public string ImageName { get; set; }
         public virtual IEnumerable<Clothes> Clothes { get; set; }
     }

@@ -3,7 +3,6 @@ using ClothesStore.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace ClothesStore.Domain.Services
@@ -70,7 +69,7 @@ namespace ClothesStore.Domain.Services
                 if (mark == null)
                     await _marks.Create(new ClothesMark { Clothes = clothes, CountInStock = count, Size = size });
                 else
-                { 
+                {
                     mark.CountInStock += count;
                     await _marks.Update(mark);
                 }

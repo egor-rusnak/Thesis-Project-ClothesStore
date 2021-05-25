@@ -1,5 +1,4 @@
-﻿using ClothesStore.WebUI.Extensions;
-using ClothesStore.WebUI.Models.Identity;
+﻿using ClothesStore.WebUI.Models.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +11,7 @@ namespace ClothesStore.WebUI.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        private readonly ClothesStore.WebUI.Services.IdentityService _service;
+        private readonly Services.IdentityService _service;
 
         public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, Services.IdentityService service)
         {

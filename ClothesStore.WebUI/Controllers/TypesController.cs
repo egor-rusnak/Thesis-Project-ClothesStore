@@ -1,23 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using ClothesStore.Domain.Entities;
+using ClothesStore.Infrastructure.Data;
+using ClothesStore.WebUI.Extensions;
+using ClothesStore.WebUI.Models.ViewModels;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using ClothesStore.Domain.Entities;
-using ClothesStore.Infrastructure.Data;
-using ClothesStore.WebUI.Models.ViewModels;
 
 namespace ClothesStore.WebUI.Controllers
 {
     public class TypesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _enviroment;
 
-        public TypesController(ApplicationDbContext context)
+        public TypesController(ApplicationDbContext context, IWebHostEnvironment enviroment)
         {
             _context = context;
+            _enviroment = enviroment;
         }
 
         // GET: Types
@@ -55,17 +58,25 @@ namespace ClothesStore.WebUI.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateViewModel<Type> model)
+        public async Task<IActionResult> Create(CreateViewModel<ClothesType> model)
         {
+
+
             if (ModelState.IsValid)
             {
                 _context.Add(model.Entity);
                 await _context.SaveChangesAsync();
+
+                await HttpContext.WriteImageTypes(_enviroment, model);
+
+                _context.Update(model.Entity);
+                await _context.SaveChangesAsync();
                 if (string.IsNullOrEmpty(model.ReturnUrl))
                     return RedirectToAction("Index");
-                else return Redirect(model.ReturnUrl);
+                else
+                    return Redirect(model.ReturnUrl);
             }
-            return View(model.Entity);
+            return View(model);
         }
 
         // GET: Types/Edit/5
@@ -129,6 +140,13 @@ namespace ClothesStore.WebUI.Controllers
 
             var clothesType = await _context.ClothesTypes
                 .FirstOrDefaultAsync(m => m.Id == id);
+            try
+            {
+                if (clothesType.ImageName != null)
+                    System.IO.File.Delete(Path.Combine("uploads//clothes", clothesType.ImageName));
+            }
+            catch (Exception) { }
+
             if (clothesType == null)
             {
                 return NotFound();
