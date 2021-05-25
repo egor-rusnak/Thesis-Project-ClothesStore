@@ -39,6 +39,21 @@ namespace ClothesStore.WebUI.Controllers
             return View(viewModel);
         }
 
+        public async Task<IActionResult> Edit(int id)
+        {
+            var clothes = await _clothesStore.GetById(id);
+            if (clothes == null) return NotFound();
+
+            var model = new EditViewModel<Clothes>()
+            {
+                Entity=clothes,
+               //TODO ADD A FILE TO EDIT MODE NOT EXACTLY LIKE THAT
+                Image=System.IO.File. Path.Combine(_enviroments.WebRootPath,"uploads//clothes",clothes.ImageName)
+            }
+
+
+        }
+
         [HttpGet]
         public async Task<IActionResult> Details(int id, string returnUrl)
         {
