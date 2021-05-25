@@ -9,5 +9,6 @@ namespace ClothesStore.Domain.Interfaces
         Task<IEnumerable<ClothesType>> GetClothesTypesByCategory(string category);
         Task<IEnumerable<Clothes>> GetClothesByTypeAndCategory(string type, string category);
         Task<IEnumerable<Clothes>> GetTopDiscountClothes(int count);
+        Task AddUnitsToClothes(int sizeId, int clothesId, int count);
     }
 }

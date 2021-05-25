@@ -51,9 +51,9 @@ namespace ClothesStore.WebUI
             services.AddScoped<IClothesService, ClothesService>();
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("Admin", p => p.RequireClaim("access", Models.Identity.Role.Admin.ToString()));
-                options.AddPolicy("Manager", p => p.RequireClaim("access", new[] { Models.Identity.Role.Manager.ToString(), Models.Identity.Role.Admin.ToString() }));
-                options.AddPolicy("User", p => p.RequireClaim("access", Models.Identity.Role.User.ToString()));
+                options.AddPolicy("Admin", p => p.RequireClaim("access", Role.Admin.ToString()));
+                options.AddPolicy("Manager", p => p.RequireClaim("access", new[] { Role.Manager.ToString(), Role.Admin.ToString()}));
+                options.AddPolicy("User", p => p.RequireClaim("access", Role.User.ToString()));
             });
             services.AddLogging();
             services.AddMemoryCache(); //now can use services  of cache memory 

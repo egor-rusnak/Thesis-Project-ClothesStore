@@ -59,7 +59,7 @@ namespace ClothesStore.Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("BrandId")
+                    b.Property<int>("BrandId")
                         .HasColumnType("int");
 
                     b.Property<int>("ClothesTypeId")
@@ -240,7 +240,9 @@ namespace ClothesStore.Infrastructure.Migrations
                 {
                     b.HasOne("ClothesStore.Domain.Entities.Brand", "Brand")
                         .WithMany()
-                        .HasForeignKey("BrandId");
+                        .HasForeignKey("BrandId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("ClothesStore.Domain.Entities.ClothesType", "ClothesType")
                         .WithMany("Clothes")

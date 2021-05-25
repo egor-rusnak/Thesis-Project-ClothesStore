@@ -12,12 +12,15 @@ namespace ClothesStore.Domain.Entities
     public class ClothesType : TEntity
     {
         [StringLength(100)]
+        [Required]
         [System.ComponentModel.DisplayName("Назва типу")]
         public string Name { get; set; }
         [System.ComponentModel.DisplayName("Категорія")]
+        [Required]
         public ClothesDestinantion Destinantion { get; set; }
 
         [System.ComponentModel.DisplayName("Рисунок для категорії")]
+        [Required]
         public string ImageName { get; set; }
         public virtual IEnumerable<Clothes> Clothes { get; set; }
     }

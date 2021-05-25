@@ -1,35 +1,42 @@
 ﻿@model RegisterViewModel
+@{
+    ViewData["Title"] = "Реєстрація";
+}
 <h2>Регістрація нового користувача</h2>
-<form method="post" asp-controller="Account" asp-action="Register">
+<form class="col-5" method="post" asp-controller="Account" asp-action="Register">
     <div asp-validation-summary="ModelOnly"></div>
-    <div>
-        <label asp-for="Email"></label><br />
-        <input asp-for="Email" />
+    <div class="form-group">
+        <label>Логін користувача </label><br />
+        <input class="form-control" asp-for="Email" />
         <span asp-validation-for="Email"></span>
     </div>
-    <div>
+    <div class="form-group">
         <label asp-for="PhoneNumber"></label><br />
-        <input asp-for="PhoneNumber" />
+        <input class="form-control" asp-for="PhoneNumber" />
         <span asp-validation-for="PhoneNumber"></span>
     </div>
-    <div>
+    <div class="form-group">
         <label asp-for="Password"></label><br />
-        <input asp-for="Password" />
+        <input class="form-control" asp-for="Password" />
         <span asp-validation-for="Password"></span>
     </div>
-    <div>
+    <div class="form-group">
         <label asp-for="PasswordConfirm"></label><br />
-        <input asp-for="PasswordConfirm" />
+        <input class="form-control" asp-for="PasswordConfirm" />
         <span asp-validation-for="PasswordConfirm"></span>
     </div>
-    @if (Context.CheckFullPrivilegies()) { 
-        <select asp-for="Role">
-            <option value="0" selected>User</option>
-            <option value="1">Admin</option>
-            <option value="1">Manager</option>
-        </select>
+    @if (Context.CheckFullPrivilegies())
+    {
+        <div class="form-group">
+            <label>Оберіть вид користувача</label>
+            <select class="form-control" asp-for="Role">
+                <option value="0" selected>User</option>
+                <option value="1">Admin</option>
+                <option value="2">Manager</option>
+            </select>
+        </div>
     }
-    <div>
-        <input type="submit" value="Зареєструватися" />
+    <div class="form-group">
+        <input class="btn btn-primary" type="submit" value="Зареєструватися" />
     </div>
 </form>

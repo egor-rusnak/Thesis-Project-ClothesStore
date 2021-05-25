@@ -3,20 +3,20 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - StyleClothes</title>
+    <title>@ViewData["Title"] - STYLE-CLOTHES</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-xl navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
                 <a class="navbar-brand" asp-controller="Home" asp-action="Index">Одяг STYLE-CLOTHES</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-lg-inline-flex justify-content-between">
+                <div class="navbar-collapse collapse d-xl-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="Clothes" asp-action="Index" asp-route-category="Чоловіки">Для чоловиків</a>
@@ -29,32 +29,32 @@
                         </li>
                     </ul>
 
+                    <a class="nav-item nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="Index" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAnQuery()">Корзина</a>
+
                     @if (User.Identity.IsAuthenticated)
                     {
-                        @if(Context.CheckFullPrivilegies()) 
-                <a class="nav-link" asp-controller="Account" asp-action="Register">Регистрация</a>
-                        <a class="nav-link " asp-controller="Account" asp-action="Index">@User.Identity.Name.Split('@')[0]</a>
-                        
+                        <a class="nav-item nav-link" asp-controller="Account" asp-action="Index">@User.Identity.Name.Split('@')[0]</a>
                         <form method="post" asp-controller="Account" asp-action="Logout">
-                            <input class="nav-link btn btn-dark" type="submit" value="Вийти" />
+                            <input class="btn btn-dark nav-item nav-link" type="submit" value="Вийти" />
                         </form>
                     }
                     else
                     {
-                        <a class="nav-link" asp-controller="Account" asp-action="Login">Вход</a>
-                        <a class="nav-link" asp-controller="Account" asp-action="Register">Регистрация</a>
+                        <a class="nav-item nav-link" asp-controller="Account" asp-action="Login">Вход</a>
+                        <a class="nav-item nav-link" asp-controller="Account" asp-action="Register">Регістрація</a>
                     }
-                    
 
-                    <div class="nav-item" style="margin-left:0.5em;">
-                        <a class="nav-link btn btn-primary text-light" asp-area="" asp-controller="Cart" asp-action="Index" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAnQuery()">Корзина</a>
-                    </div>
+
                 </div>
             </div>
         </nav>
     </header>
     <div class="container">
         <main role="main" class="pb-3">
+            @if (Context.CheckFullPrivilegies())
+            {
+                <a asp-controller="Admin" asp-action="Index">Перейти до адмін панелі</a>
+            }
             @RenderBody()
         </main>
     </div>

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClothesStore.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210518171215_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20210525115154_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -43,6 +43,12 @@ namespace ClothesStore.Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Clients");
@@ -55,11 +61,17 @@ namespace ClothesStore.Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("BrandId")
+                    b.Property<int>("BrandId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ClothesTypeId")
+                    b.Property<int>("ClothesTypeId")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("Cost")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("ImageName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Material")
                         .HasMaxLength(100)
@@ -90,9 +102,6 @@ namespace ClothesStore.Infrastructure.Migrations
 
                     b.Property<int>("ClothesId")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(10,2)");
 
                     b.Property<int>("CountInStock")
                         .HasColumnType("int");
@@ -149,12 +158,12 @@ namespace ClothesStore.Infrastructure.Migrations
                     b.Property<int>("Destinantion")
                         .HasColumnType("int");
 
+                    b.Property<string>("ImageName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("imgSrc")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -187,19 +196,13 @@ namespace ClothesStore.Infrastructure.Migrations
                     b.Property<bool>("Canceled")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("ClientId")
+                    b.Property<int>("ClientId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DateOfOrder")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("Finished")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsPaid")
-                        .HasColumnType("bit");
-
-                    b.Property<int?>("ManagerId")
+                    b.Property<int>("ManagerId")
                         .HasColumnType("int");
 
                     b.Property<int>("PayMethod")
@@ -207,6 +210,9 @@ namespace ClothesStore.Infrastructure.Migrations
 
                     b.Property<DateTime>("ShipDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("Shiped")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -236,11 +242,15 @@ namespace ClothesStore.Infrastructure.Migrations
                 {
                     b.HasOne("ClothesStore.Domain.Entities.Brand", "Brand")
                         .WithMany()
-                        .HasForeignKey("BrandId");
+                        .HasForeignKey("BrandId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("ClothesStore.Domain.Entities.ClothesType", "ClothesType")
                         .WithMany("Clothes")
-                        .HasForeignKey("ClothesTypeId");
+                        .HasForeignKey("ClothesTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Brand");
 
@@ -289,11 +299,15 @@ namespace ClothesStore.Infrastructure.Migrations
                 {
                     b.HasOne("ClothesStore.Domain.Entities.Client", "Client")
                         .WithMany()
-                        .HasForeignKey("ClientId");
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("ClothesStore.Domain.Entities.Manager", "Manager")
                         .WithMany()
-                        .HasForeignKey("ManagerId");
+                        .HasForeignKey("ManagerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.OwnsOne("ClothesStore.Domain.Entities.Address", "ShipAddress", b1 =>
                         {

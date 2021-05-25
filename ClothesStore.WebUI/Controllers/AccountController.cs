@@ -53,12 +53,14 @@ namespace ClothesStore.WebUI.Controllers
             }
             return View(model);
         }
+
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Login(string returnUrl = null)
         {
             return View(new LoginViewModel { ReturnUrl = returnUrl });
         }
+
         public IActionResult AccessDenied()
         {
             return View();

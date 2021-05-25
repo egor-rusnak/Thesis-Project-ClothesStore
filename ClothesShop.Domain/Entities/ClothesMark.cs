@@ -7,7 +7,7 @@ namespace ClothesStore.Domain.Entities
     {
         [Range(0, 1000)]
         [System.ComponentModel.DisplayName("Кількість на складі")]
-        public int CountInStock { get; set; }
+        public int CountInStock { get; set; } = 0;
         [System.ComponentModel.DisplayName("Розмір")]
         public int SizeId { get; set; }
         [System.ComponentModel.DisplayName("Одяг")]

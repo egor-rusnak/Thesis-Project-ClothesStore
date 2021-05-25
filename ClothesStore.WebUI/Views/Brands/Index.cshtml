@@ -1,0 +1,35 @@
+﻿@model IEnumerable<ClothesStore.Domain.Entities.Brand>
+
+@{
+    ViewData["Title"] = "Бренди";
+}
+
+<h1>Бренди</h1>
+
+<p>
+    <a asp-action="Create">Додати</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Змінити</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Інфо</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Вилучити</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

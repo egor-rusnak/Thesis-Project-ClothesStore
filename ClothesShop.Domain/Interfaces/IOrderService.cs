@@ -6,7 +6,7 @@ namespace ClothesStore.Domain.Interfaces
 {
     public interface IOrderService
     {
-        Task AddOrder(Order order);
+        Task AddOrder(Order order, IEnumerable<ClothesOrder> list);
         Task RemoveOrder(int id);
         Task<IEnumerable<Order>> GetLastClientOrders(int count, int clientId);
         Task UpdateOrder(Order order);

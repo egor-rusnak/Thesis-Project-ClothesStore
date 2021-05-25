@@ -47,7 +47,6 @@ namespace ClothesStore.WebUI.Controllers
             };
             ViewBag.Sizes = viewModel.Entity.Sizes;
             return View(viewModel);
-                
         }
 
 
@@ -62,7 +61,8 @@ namespace ClothesStore.WebUI.Controllers
                 {
                     CategoryName = category,
                     TypeName = type,
-                    Clothes = clothes.Select(e => ClothesViewModel.CreateClothesView(e))
+                    Clothes = clothes.Select(e => ClothesViewModel.CreateClothesView(e)),
+                    Brands =clothes.Select(e => e.Brand!=null?new BrandsCheck { BrandId = e.Brand.Id, BrandName = e.Brand.Name, Checked = true }:null).Distinct()
                 });
             }
             catch (ArgumentException)
@@ -81,13 +81,14 @@ namespace ClothesStore.WebUI.Controllers
             var model = new CreateViewModel<Clothes>() { Entity = clothes, ReturnUrl = returnUrl };
             return View(model);
         }
+
         [Authorize(Policy = "Manager")]
         [HttpPost]
-        public async Task<IActionResult> Create(CreateViewModel<Clothes> clothesModel)
+        public async Task<IActionResult> Create(CreateClothesViewModel clothesModel)
         {
             if (ModelState.IsValid)
             {
-
+                
                 var clothes = await _clothesStore.Create(clothesModel.Entity);
                 var files = HttpContext.Request.Form.Files;
                 foreach (var Image in files)
@@ -108,6 +109,7 @@ namespace ClothesStore.WebUI.Controllers
                         }
                     }
                 }
+
                 await _clothesStore.Update(clothes);
 
                 return Redirect(clothesModel.ReturnUrl);
@@ -129,6 +131,5 @@ namespace ClothesStore.WebUI.Controllers
         {
             return new SelectList(sizes, "Id", "Mark");
         }
-
     }
 }

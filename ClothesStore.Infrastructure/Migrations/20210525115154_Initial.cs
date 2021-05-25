@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-using System;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ClothesStore.Infrastructure.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -25,7 +25,9 @@ namespace ClothesStore.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1")
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -40,7 +42,7 @@ namespace ClothesStore.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Destinantion = table.Column<int>(type: "int", nullable: false),
-                    imgSrc = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ImageName = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -79,10 +81,12 @@ namespace ClothesStore.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    BrandId = table.Column<int>(type: "int", nullable: true),
+                    BrandId = table.Column<int>(type: "int", nullable: false),
                     PromoutionPercent = table.Column<float>(type: "real", nullable: false),
                     Material = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    ClothesTypeId = table.Column<int>(type: "int", nullable: true)
+                    ClothesTypeId = table.Column<int>(type: "int", nullable: false),
+                    Cost = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ImageName = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -92,13 +96,13 @@ namespace ClothesStore.Infrastructure.Migrations
                         column: x => x.BrandId,
                         principalTable: "Brands",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Clothes_ClothesTypes_ClothesTypeId",
                         column: x => x.ClothesTypeId,
                         principalTable: "ClothesTypes",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -110,14 +114,13 @@ namespace ClothesStore.Infrastructure.Migrations
                     PayMethod = table.Column<int>(type: "int", nullable: false),
                     DateOfOrder = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ShipDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    IsPaid = table.Column<bool>(type: "bit", nullable: false),
-                    ClientId = table.Column<int>(type: "int", nullable: true),
-                    ManagerId = table.Column<int>(type: "int", nullable: true),
+                    ClientId = table.Column<int>(type: "int", nullable: false),
+                    ManagerId = table.Column<int>(type: "int", nullable: false),
                     ShipAddress_PostalCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ShipAddress_City = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     ShipAddress_ShipAddress = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     Canceled = table.Column<bool>(type: "bit", nullable: false),
-                    Finished = table.Column<bool>(type: "bit", nullable: false)
+                    Shiped = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -127,13 +130,13 @@ namespace ClothesStore.Infrastructure.Migrations
                         column: x => x.ClientId,
                         principalTable: "Clients",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Orders_Managers_ManagerId",
                         column: x => x.ManagerId,
                         principalTable: "Managers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -144,8 +147,7 @@ namespace ClothesStore.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CountInStock = table.Column<int>(type: "int", nullable: false),
                     SizeId = table.Column<int>(type: "int", nullable: false),
-                    ClothesId = table.Column<int>(type: "int", nullable: false),
-                    Cost = table.Column<decimal>(type: "decimal(10,2)", nullable: false)
+                    ClothesId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace ClothesStore.WebUI.Controllers
 {
@@ -12,22 +13,16 @@ namespace ClothesStore.WebUI.Controllers
             return View(new List<string>
             {
                 nameof(Brands),
-                nameof(Clothes),
-                nameof(ClothesMarks),
-                nameof(ClothesOrders),
-                nameof(ClothesTypes),
-                nameof(Orders),
-                nameof(Sizes)
+                nameof(Sizes),
+                nameof(Register)
             });
         }
 
-
-        public IActionResult Brands() { return View(); }
-        public IActionResult Clothes() { return View(); }
-        public IActionResult ClothesMarks() { return View(); }
-        public IActionResult ClothesOrders() { return View(); }
-        public IActionResult ClothesTypes() { return View(); }
-        public IActionResult Orders() { return View(); }
-        public IActionResult Sizes() { return View(); }
+        [DisplayName("Зареєструватися")]
+        public IActionResult Register() { return RedirectToAction("Register", "Account"); }
+        [DisplayName("Бренди")]
+        public IActionResult Brands() { return RedirectToAction("Index", "Brands"); }
+        [DisplayName("Розміри")]
+        public IActionResult Sizes() { return RedirectToAction("Index", "Sizes"); }
     }
 }

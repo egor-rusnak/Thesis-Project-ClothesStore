@@ -12,6 +12,7 @@ namespace ClothesStore.Domain.Entities
     public class Order : TEntity
     {
         [System.ComponentModel.DisplayName("Метод оплати")]
+        [Required]
         public PaymentMethod PayMethod { get; set; }
 
         [DataType(DataType.Date)]
@@ -31,6 +32,7 @@ namespace ClothesStore.Domain.Entities
         public virtual Manager Manager { get; set; }
 
         [System.ComponentModel.DisplayName("Адреса")]
+        [Required]
         public Address ShipAddress { get; private set; }
 
         public virtual IEnumerable<ClothesOrder> ClothesOrders { get; set; }

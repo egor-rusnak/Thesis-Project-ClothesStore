@@ -1,0 +1,21 @@
+﻿@model ClothesStore.Domain.Entities.Size
+
+@{
+    ViewData["Title"] = "Розмір";
+}
+<div>
+    <h4>Розмір</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Mark)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Mark)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Змінити</a> |
+    <a asp-action="Index">Повернутись</a>
+</div>

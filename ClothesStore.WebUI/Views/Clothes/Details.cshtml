@@ -31,7 +31,7 @@
     </div>
     <div>
         @if (Context.CheckManagerPrivilegies()) { 
-            <a asp-action="Edit" asp-route-id="@Model.Entity.Id">Edit |</a>
+            <a asp-action="Edit" asp-route-id="@Model.Entity.Id">Змінити |</a>
         }
-        <a href="@Model.ReturnUrl">Back</a>
+        <a href="@Model.ReturnUrl">Повернутись</a>
     </div>

@@ -7,7 +7,9 @@ namespace ClothesStore.Domain.Entities
     {
         [Range(0, 1000)]
         [System.ComponentModel.DisplayName("Кількість в замовленні")]
+        [Required]
         public int Count { get; set; }
+        [Required]
 
         [DataType(DataType.Currency)]
         [Column(TypeName = "decimal(10,2)")]
