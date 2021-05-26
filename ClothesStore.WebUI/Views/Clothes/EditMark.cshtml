@@ -22,6 +22,7 @@
             <input type="hidden" asp-for="Entity.Id" />
             <input type="hidden" asp-for="Entity.ClothesId" />
             <input type="hidden" asp-for="ClothesName"/>
+            <input type="hidden" asp-for="ReturnUrl"/>
             <div class="form-group">
                 <input type="submit" value="Зберегти" class="btn btn-primary" />
             </div>
@@ -30,7 +31,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Повернутись</a>
+    <a href="@Model.ReturnUrl">Повернутись</a>
 </div>
 
 @section Scripts {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace ClothesStore.Domain.Entities
@@ -13,6 +14,7 @@ namespace ClothesStore.Domain.Entities
         [System.ComponentModel.DisplayName("Одяг")]
         public int ClothesId { get; set; }
         public virtual Clothes Clothes { get; set; }
+        [JsonIgnore]
         public virtual Size Size { get; set; }
     }
 }

@@ -27,7 +27,7 @@ namespace ClothesStore.WebUI.Controllers
             var viewModel = new HomeIndexViewModel()
             {
                 Carousel = _topService.GetPopularByLastMonth(5).Select(e => ClothesViewModel.CreateClothesView(e)),
-                DiscountProducts = (await _clothes.GetTopDiscountClothes(5)).Select(e => ClothesViewModel.CreateClothesView(e))
+                DiscountProducts = (await _clothes.GetTopDiscountClothes(4)).Select(e => ClothesViewModel.CreateClothesView(e))
             };
             return View(viewModel);
         }

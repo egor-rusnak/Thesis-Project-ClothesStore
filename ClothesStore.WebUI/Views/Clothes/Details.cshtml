@@ -6,8 +6,8 @@
 <h4>@Model.Entity.Name</h4>
 <hr />
 <div class="row">
-    <div class="col-3">
-        <img src="~/uploads/clothes/@Model.Entity.Image" />
+    <div class="col-4">
+        <img class="img-responsive" src="~/uploads/clothes/@Model.Entity.Image" />
     </div>
     <div class="col-6">
         <p>@Model.Entity.Description</p>
@@ -15,23 +15,24 @@
     </div>
     <div class="col-6">
         @if (Model.Entity.Sizes?.Count() > 0) { 
-        <form asp-action="AddToCart"
-          asp-controller="Cart" method="Post">
+        <form  asp-action="AddToCart"
+          asp-controller="Cart">
             <p>Оберіть розмір для замовлення: </p>
             @Html.DropDownList("sizeId", new SelectList(Model.Entity.Sizes, "SizeId", "SizeMark"))
-            <input type="hidden" asp-for="Entity.Id" />
-            <input type="hidden" asp-for="ReturnUrl"/>
+            <input id="clothesId" name="clothesId" value="@Model.Entity.Id" type="hidden"/>
+            <input asp-for="ReturnUrl" type="hidden" />
+            <input type="submit" value="Додати у кошик"/> 
         </form>
         }
-            else
-            {
-                <h6>Цього товару немаэ на складі!</h6>
-            }
+        else
+        {
+            <h6>Цього товару немаэ на складі!</h6>
+        }
     </div>
     <div>
         @if (Context.CheckManagerPrivilegies()) { 
-            <a asp-action="Edit" asp-route-id="@Model.Entity.Id">Змінити |</a>
-            <a asp-action="ClothesMarks" asp-route-id="@Model.Entity.Id">Кількість на складі</a>
+            <a asp-action="Edit" asp-route-id="@Model.Entity.Id">Змінити|</a>
+            <a asp-action="ClothesMarks" asp-route-id="@Model.Entity.Id">Кількість на складі|</a>
         }
         <a href="@Model.ReturnUrl">Повернутись</a>
     </div>

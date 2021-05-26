@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -22,7 +23,9 @@ namespace ClothesStore.Domain.Entities
         [System.ComponentModel.DisplayName("Перелік матеріалів")]
         [Required]
         public string Material { get; set; }
+        [JsonIgnore]
         public virtual IEnumerable<ClothesMark> ClothesMarksInStock { get; set; }
+        [JsonIgnore]
         public virtual ClothesType ClothesType { get; set; }
         public int ClothesTypeId { get; set; }
         [System.ComponentModel.DisplayName("Ціна за одяг")]

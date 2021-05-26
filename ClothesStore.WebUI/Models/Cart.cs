@@ -33,7 +33,7 @@ namespace ClothesStore.WebUI.Models
             lineCollection.RemoveAll(l => l.ClothesUnit == product);
 
         public virtual decimal ComputeTotalValue() =>
-            lineCollection.Sum(e => e.CostPerSingle * e.Count);
+            lineCollection.Sum(e => (e.CostPerSingle-e.CostPerSingle*((decimal)e.ClothesUnit.Clothes.PromoutionPercent/100)) * e.Count);
 
         public virtual void Clear() => lineCollection.Clear();
 

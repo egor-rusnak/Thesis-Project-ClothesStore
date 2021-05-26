@@ -32,7 +32,6 @@ namespace ClothesStore.Domain.Entities
         public virtual Manager Manager { get; set; }
 
         [System.ComponentModel.DisplayName("Адреса")]
-        [Required]
         public Address ShipAddress { get; private set; }
 
         public virtual IEnumerable<ClothesOrder> ClothesOrders { get; set; }

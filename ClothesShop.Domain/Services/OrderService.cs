@@ -35,6 +35,15 @@ namespace ClothesStore.Domain.Services
             await _orders.Create(order);
         }
 
+        public async Task<IEnumerable<ClothesMark>> UnOrderableMarks(IEnumerable<ClothesOrder> list)
+        {
+            var marks = await _store.GetBy(e => list.Any(m => m.ClothesUnitId == e.Id));
+            var checkList = marks.Select(e => new { ClothesOrder =  StoreCount = e.CountInStock, CountToGet = list.FirstOrDefault(m => e.Id == m.ClothesUnitId).Count })
+        }
+
+
+
+
         public async Task CancelOrder(int id)
         {
             var order = await _orders.GetById(id);

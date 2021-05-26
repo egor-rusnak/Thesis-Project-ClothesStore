@@ -72,46 +72,55 @@ namespace ClothesStore.WebUI.Controllers
             else return Redirect(returnUrl);
         }
         [HttpGet]
-        public async Task<IActionResult> EditMark(int id)
+        public async Task<IActionResult> EditMark(int id, string returnUrl)
         {
             var mark = await _marks.GetById(id);
+            ViewBag.Sizes = await _sizes.GetAll();
             if (mark == null) return NotFound();
 
-            return View(new EditViewModel<ClothesMark> { Entity = mark });
+            return View(new MarkViewModel { ClothesName=mark.Clothes.Name, Entity = mark, ReturnUrl=returnUrl });
         }
         [HttpPost]
-        public async Task<IActionResult> EditMark(EditViewModel<ClothesMark> model)
+        public async Task<IActionResult> EditMark(MarkViewModel model)
         {
             if (ModelState.IsValid)
             {
                 await _marks.Update(model.Entity);
                 return RedirectToReturnUrlOrHome(model.ReturnUrl);
             }
-
-            return View(model);
+            ViewBag.Sizes = await _sizes.GetAll();
+            return View(model); 
         }
 
 
         [HttpGet]
         public async Task<IActionResult> Index(string category)
         {
-            var clothesTypes = await _clothes.GetClothesTypesByCategory(category);
-            var viewModel = new CategoryViewModel();
-            if (clothesTypes == null) return NotFound();
-            viewModel.Category = category;
-            viewModel.Types = clothesTypes;
+            try
+            {
+                var clothesTypes = await _clothes.GetClothesTypesByCategory(category);
+                var viewModel = new CategoryViewModel();
+                if (clothesTypes == null) return NotFound();
+                viewModel.Category = category;
+                viewModel.Types = clothesTypes;
 
-            return View(viewModel);
+                return View(viewModel);
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
         }
 
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(int id,string returnUrl)
         {
             var clothes = await _clothesStore.GetById(id);
             if (clothes == null) return NotFound();
             ViewBag.Brands = await _brands.GetAll();
             var model = new EditViewModel<Clothes>()
             {
-                Entity = clothes
+                Entity = clothes,
+                ReturnUrl=returnUrl
             };
 
             return View(model);
@@ -150,7 +159,7 @@ namespace ClothesStore.WebUI.Controllers
         public async Task<IActionResult> ClothesList(string category, string type)
         {
             try
-            {
+            { 
                 var clothes = await _clothes.GetClothesByTypeAndCategory(type, category);
 
                 return View(new ClothesListViewModel()
@@ -162,9 +171,13 @@ namespace ClothesStore.WebUI.Controllers
                     .GroupBy(e => e.BrandId).Select(e => e.First()).ToList()
                 }) ;
             }
-            catch (ArgumentException)
+            catch(ArgumentException)
             {
-                return View("Error", new Models.ErrorViewModel() { RequestId = "ERROROR" });
+                return NotFound();
+            }
+            catch (Exception)
+            {
+                return RedirectToAction("Error", "Home", new { message = "Bad category or type" });
             }
         }
 

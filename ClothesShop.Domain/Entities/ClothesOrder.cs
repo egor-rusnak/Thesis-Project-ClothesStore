@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
+using Newtonsoft.Json;
 namespace ClothesStore.Domain.Entities
 {
     public class ClothesOrder : TEntity
@@ -26,6 +26,7 @@ namespace ClothesStore.Domain.Entities
         public int OrderId { get; private set; }
 
         public virtual ClothesMark ClothesUnit { get; set; }
+        [JsonIgnore]
         public virtual Order Order { get; set; }
     }
 }

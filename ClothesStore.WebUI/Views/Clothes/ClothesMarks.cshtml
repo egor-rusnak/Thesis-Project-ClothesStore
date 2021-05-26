@@ -28,7 +28,7 @@
                    </td>
                    <td>
                        <a asp-action="DeleteMark" asp-route-id="@mark.Id">Вилучити</a>
-                       <a  asp-action="EditMark" asp-route-id="@mark.Id">
+                       <a  asp-action="EditMark" asp-route-id="@mark.Id" asp-route-returnUrl="@Context.Request.PathAnQuery()">
                            Змінити
                        </a>
                    </td>

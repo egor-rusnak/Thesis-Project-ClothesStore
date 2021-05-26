@@ -11,12 +11,14 @@ namespace ClothesStore.WebUI.Controllers
     public class OrderController : Controller
     {
         private IAsyncRepository<Order> _orders;
+        private IOrderService _orderService;
         private Cart cart;
 
-        public OrderController(IAsyncRepository<Order> orders, Cart cart)
+        public OrderController(IAsyncRepository<Order> orders, Cart cart, IOrderService orderService)
         {
             this._orders = orders;
             this.cart = cart;
+            _orderService = orderService;
         }
         [Authorize(Policy = "Manager")]
         public async Task<ViewResult> List() => View(await _orders.GetAll());
@@ -44,12 +46,19 @@ namespace ClothesStore.WebUI.Controllers
 
         [HttpPost]
 
-        public IActionResult Checkout(Order order)
+        public async  Task<IActionResult> Checkout(Order order)
         {
             if (ModelState.IsValid)
             {
                 order.ClothesOrders = cart.Lines.ToArray();
-                _orders.Update(order);
+                try
+                {
+                    await orderService.AddOrder(order, cart.Lines.ToArray());
+                }
+                catch (Exception)
+                {
+                    return
+                }
                 return RedirectToAction(nameof(Completed));
             }
             else
