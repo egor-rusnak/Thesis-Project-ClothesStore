@@ -6,7 +6,6 @@
 <h4>@Model.Entity.Name</h4>
 <hr />
 <div class="row">
-
     <div class="col-3">
         <img src="~/uploads/clothes/@Model.Entity.Image" />
     </div>
@@ -32,6 +31,8 @@
     <div>
         @if (Context.CheckManagerPrivilegies()) { 
             <a asp-action="Edit" asp-route-id="@Model.Entity.Id">Змінити |</a>
+            <a asp-action="ClothesMarks" asp-route-id="@Model.Entity.Id">Кількість на складі</a>
         }
         <a href="@Model.ReturnUrl">Повернутись</a>
     </div>
+</div>

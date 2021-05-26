@@ -60,14 +60,12 @@ namespace ClothesStore.WebUI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateViewModel<ClothesType> model)
         {
-
-
             if (ModelState.IsValid)
             {
                 _context.Add(model.Entity);
                 await _context.SaveChangesAsync();
 
-                await HttpContext.WriteImageTypes(_enviroment, model);
+                await HttpContext.WriteImageTypes(_enviroment, model.Entity);
 
                 _context.Update(model.Entity);
                 await _context.SaveChangesAsync();

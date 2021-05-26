@@ -1,0 +1,37 @@
+﻿@model MarkViewModel
+@{
+    ViewData["Title"] = "Розмір для одягу";
+}
+<h3>Для @Model.ClothesName</h3>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-controller="Clothes" asp-action="AddMark" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Entity.Size" class="control-label"></label>
+                @Html.DropDownListFor(e => e.Entity.SizeId, new SelectList(ViewBag.Sizes, "Id", "Mark"))
+                <span asp-validation-for="Entity.SizeId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Entity.CountInStock" class="control-label"></label>
+                <input asp-for="Entity.CountInStock" class="form-control" />
+                <span asp-validation-for="Entity.CountInStock" class="text-danger"></span>
+            </div>
+            <input asp-for="ReturnUrl" type="hidden" />
+            <input asp-for="Entity.ClothesId" type="hidden" />
+            <input asp-for="ClothesName" type="hidden" />
+            <div class="form-group">
+                <input type="submit" value="Додати" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Повернутись</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

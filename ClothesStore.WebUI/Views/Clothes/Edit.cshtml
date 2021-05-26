@@ -1,0 +1,59 @@
+﻿@model EditViewModel<Clothes>
+
+@{
+    ViewData["Title"] = "Одяг";
+}
+
+<h4>Одяг</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form enctype="multipart/form-data" asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Entity.Name" class="control-label"></label>
+                <input asp-for="Entity.Name" class="form-control" />
+                <span asp-validation-for="Entity.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Entity.Brand" class="control-label"></label>
+                @Html.DropDownListFor(e => e.Entity.BrandId, new SelectList(ViewBag.Brands, "Id", "Name"))
+                <span asp-validation-for="Entity.Brand" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Entity.PromoutionPercent" class="control-label"></label>
+                <input asp-for="Entity.PromoutionPercent" class="form-control" />
+                <span asp-validation-for="Entity.PromoutionPercent" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Entity.Material" class="control-label"></label>
+                <input asp-for="Entity.Material" class="form-control" />
+                <span asp-validation-for="Entity.Material" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Entity.Cost" class="control-label"></label>
+                <input asp-for="Entity.Cost" class="form-control" />
+                <span asp-validation-for="Entity.Cost" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Entity.ImageName" class="control-label"></label>
+                <img src="~/uploads/clothes/@Model.Entity.ImageName" />
+                <input asp-for="Image"  class="form-control"/>
+                <span asp-validation-for="Entity.ImageName" class="text-danger"></span>
+            </div>
+            <input type="hidden" asp-for="Entity.Id" />
+            <input type="hidden" asp-for="Entity.ClothesTypeId" />
+            <div class="form-group">
+                <input type="submit" value="Зберегти" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Повернутись</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

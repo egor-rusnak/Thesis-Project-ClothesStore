@@ -25,9 +25,9 @@ namespace ClothesStore.WebUI.Extensions
             else
                 return false;
         }
-        public static async Task WriteImageClothes(this HttpContext context, IWebHostEnvironment env, CreateClothesViewModel model)
+        public static async Task WriteImageClothes(this HttpContext context, IWebHostEnvironment env, Clothes model)
         {
-            var clothes = model.Entity;
+            var clothes = model;
             foreach (var Image in context.Request.Form.Files)
             {
                 if (Image != null && Image.Length > 0)
@@ -49,9 +49,9 @@ namespace ClothesStore.WebUI.Extensions
                 }
             }
         }
-        public static async Task WriteImageTypes(this HttpContext context, IWebHostEnvironment env, CreateViewModel<ClothesType> model)
+        public static async Task WriteImageTypes(this HttpContext context, IWebHostEnvironment env, ClothesType model)
         {
-            var type = model.Entity;
+            var type = model;
             foreach (var Image in context.Request.Form.Files)
             {
                 if (Image != null && Image.Length > 0)
@@ -63,6 +63,7 @@ namespace ClothesStore.WebUI.Extensions
                     if (file.Length > 0)
                     {
                         var fileName = type.Id + "_" + type.Name.Replace("/", "\\").Replace("\\", "_") + Path.GetExtension(file.FileName);
+                        
                         using (var fileStream = new FileStream(Path.Combine(uploads, fileName), FileMode.Create))
                         {
                             await file.CopyToAsync(fileStream);
