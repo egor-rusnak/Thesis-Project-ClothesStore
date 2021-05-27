@@ -3,7 +3,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using ClothesStore.WebUI.Extensions;
 using System.Threading.Tasks;
+using ClothesStore.WebUI.Models.ViewModels;
+using ClothesStore.Domain.Interfaces;
 
 namespace ClothesStore.WebUI.Controllers
 {
@@ -12,6 +15,7 @@ namespace ClothesStore.WebUI.Controllers
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly Services.IdentityService _service;
+        private readonly IOrderService _orderSerivce;
 
         public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, Services.IdentityService service)
         {
@@ -25,9 +29,22 @@ namespace ClothesStore.WebUI.Controllers
         {
             return View();
         }
-        public IActionResult Index()
+        [Authorize]
+        public async Task<IActionResult> Index()
         {
-            throw new NotImplementedException();
+            if (HttpContext.CheckManagerPrivilegies())
+            {
+                var manager = await _userManager.GetUserAsync(HttpContext.User);
+                if (manager == null || manager.IdForExternalDb == 0) return NotFound();
+                return View("ManagerIndex", new ManagerIndexViewModel()
+                {
+                    Orders = await _orderSerivce.GetOrdersWithManagerIdOrWithoutManager(manager.IdForExternalDb)
+                });
+            }
+            else if (HttpContext.CheckFullPrivilegies())
+                return RedirectToAction("Index", "Account");
+            else
+                return View("UserIndex", new UserViewModel);
         }
 
         [HttpPost]

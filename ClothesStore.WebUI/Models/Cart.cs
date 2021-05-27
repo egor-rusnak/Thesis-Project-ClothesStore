@@ -30,7 +30,7 @@ namespace ClothesStore.WebUI.Models
         }
 
         public virtual void RemoveLine(ClothesMark product) =>
-            lineCollection.RemoveAll(l => l.ClothesUnit == product);
+            lineCollection.RemoveAll(l => l.ClothesUnit.Id == product.Id);
 
         public virtual decimal ComputeTotalValue() =>
             lineCollection.Sum(e => (e.CostPerSingle-e.CostPerSingle*((decimal)e.ClothesUnit.Clothes.PromoutionPercent/100)) * e.Count);

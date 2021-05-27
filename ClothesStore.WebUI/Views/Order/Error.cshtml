@@ -1,2 +1,9 @@
-﻿@model 
+﻿@model OrderErrorViewModel
 <h1>Щось не так з вашим замовленням!</h1>
+
+<h3>@Model.ErrorMessage</h3>
+
+@foreach(var errmod in Model.MarksThatIsNotInStock)
+            {
+                <p>@errmod.Clothes.Name - -  @errmod.Size.Mark -- @errmod.CountInStock всього</p>
+            }

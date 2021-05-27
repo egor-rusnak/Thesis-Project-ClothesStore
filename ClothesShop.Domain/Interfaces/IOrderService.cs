@@ -11,5 +11,7 @@ namespace ClothesStore.Domain.Interfaces
         Task<IEnumerable<Order>> GetLastClientOrders(int count, int clientId);
         Task UpdateOrder(Order order);
         Task CancelOrder(int id);
+        Task<IEnumerable<ClothesMark>> UnOrderableMarks(IEnumerable<ClothesOrder> list);
+        Task<IEnumerable<Order>> GetOrdersWithManagerIdOrWithoutManager(int managerId);
     }
 }

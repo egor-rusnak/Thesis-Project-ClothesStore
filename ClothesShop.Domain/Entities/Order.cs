@@ -22,17 +22,22 @@ namespace ClothesStore.Domain.Entities
         [DataType(DataType.Date)]
         [System.ComponentModel.DisplayName("Примірний час отримання")]
         public DateTime ShipDate { get; set; }
-
-        [System.ComponentModel.DisplayName("Клієнт")]
-        public int ClientId { get; set; }
-        [System.ComponentModel.DisplayName("Менеджер")]
-        public int ManagerId { get; set; }
         public virtual Client Client { get; set; }
 
         public virtual Manager Manager { get; set; }
 
+        [Required]
+        [DataType(DataType.PostalCode)]
+        [System.ComponentModel.DisplayName("Поштовий код")]
+        public string PostalCode { get;  set; }
+        [Required]
+        [StringLength(100)]
+        [System.ComponentModel.DisplayName("Місто")]
+        public string City { get;  set; }
+        [Required]
+        [StringLength(500)]
         [System.ComponentModel.DisplayName("Адреса")]
-        public Address ShipAddress { get; private set; }
+        public string ShipAddress { get;  set; }
 
         public virtual IEnumerable<ClothesOrder> ClothesOrders { get; set; }
 
@@ -42,9 +47,5 @@ namespace ClothesStore.Domain.Entities
         [System.ComponentModel.DisplayName("Доставку та оплату виконано")]
         public bool Shiped { get; set; } = false;
 
-        public void SetAddress(string postalCode, string city, string shipAddress)
-        {
-            ShipAddress = new Address(shipAddress, city, postalCode);
-        }
     }
 }

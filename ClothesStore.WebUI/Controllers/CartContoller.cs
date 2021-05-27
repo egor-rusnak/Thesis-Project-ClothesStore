@@ -2,12 +2,14 @@
 using ClothesStore.Domain.Interfaces;
 using ClothesStore.WebUI.Models;
 using ClothesStore.WebUI.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace ClothesStore.WebUI.Controllers
 {
+    [AllowAnonymous]
     public class CartController : Controller
     {
         private readonly IAsyncRepository<ClothesMark> _clothes;
@@ -34,6 +36,7 @@ namespace ClothesStore.WebUI.Controllers
             return RedirectToAction("Index", new { returnUrl });
         }
 
+        [HttpPost]
         public async Task<RedirectToActionResult> RemoveFromCart(int sizeId, int clothesId, string returnUrl)
         {
             var product = (await _clothes.GetAll()).FirstOrDefault(p => p.SizeId == sizeId && p.ClothesId == clothesId);

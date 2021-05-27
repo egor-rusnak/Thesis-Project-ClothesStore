@@ -21,9 +21,9 @@ namespace ClothesStore.Domain.Entities
 
 
         [System.ComponentModel.DisplayName("Назва одягу")]
-        public int ClothesUnitId { get; private set; }
+        public int ClothesUnitId { get; set; }
         [System.ComponentModel.DisplayName("Код замовлення")]
-        public int OrderId { get; private set; }
+        public int OrderId { get; set; }
 
         public virtual ClothesMark ClothesUnit { get; set; }
         [JsonIgnore]

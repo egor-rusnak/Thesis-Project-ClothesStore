@@ -32,7 +32,7 @@ namespace ClothesStore.WebUI.Controllers
             _marks = marks;
         }
 
-        public async Task<IActionResult> AddMark(int id)
+        public async Task<IActionResult> AddMark(int id, string returnUrl)
         {
             var clothes = await _clothesStore.GetById(id);
             if (clothes == null) return NotFound();
@@ -45,7 +45,7 @@ namespace ClothesStore.WebUI.Controllers
             {
                 Entity = new ClothesMark { ClothesId = id, CountInStock = 5 },
                 ClothesName = clothes.Name, 
-                ReturnUrl = "" 
+                ReturnUrl = returnUrl
             };
 
             return View(model);
@@ -81,7 +81,7 @@ namespace ClothesStore.WebUI.Controllers
             return View(new MarkViewModel { ClothesName=mark.Clothes.Name, Entity = mark, ReturnUrl=returnUrl });
         }
         [HttpPost]
-        public async Task<IActionResult> EditMark(MarkViewModel model)
+        public async Task<IActionResult> EditMark(MarkViewModel model) 
         {
             if (ModelState.IsValid)
             {
@@ -92,6 +92,16 @@ namespace ClothesStore.WebUI.Controllers
             return View(model); 
         }
 
+        public async Task<IActionResult> DeleteMark(int id,string returnUrl)
+        {
+            var mark = await _marks.GetById(id);
+            if (mark == null) return NotFound();
+
+            await _marks.Delete(mark.Id);
+
+            return RedirectToReturnUrlOrHome(returnUrl);
+
+        }
 
         [HttpGet]
         public async Task<IActionResult> Index(string category)
@@ -131,13 +141,17 @@ namespace ClothesStore.WebUI.Controllers
 
             if (ModelState.IsValid)
             {
-                ViewBag.Brands = await _brands.GetAll();
+
                 await HttpContext.WriteImageClothes(_enviroments, model.Entity);
 
                 await _clothesStore.Update(model.Entity);
                 return RedirectToReturnUrlOrHome(model.ReturnUrl);
             }
-            else return View(model);
+            else
+            {
+                ViewBag.Brands = await _brands.GetAll();
+                return View(model);
+            }
         }
 
         [HttpGet]
@@ -177,7 +191,7 @@ namespace ClothesStore.WebUI.Controllers
             }
             catch (Exception)
             {
-                return RedirectToAction("Error", "Home", new { message = "Bad category or type" });
+                return RedirectToAction("Error", "Home", new { message = "Не правильна категорія або тип одягу!" });
             }
         }
 
@@ -186,7 +200,7 @@ namespace ClothesStore.WebUI.Controllers
         public async Task<IActionResult> Create(string type, string category, string returnUrl)
         {
             var brands = await _brands.GetAll();
-            if (!brands.Any()) return RedirectToAction("Error", "Home", new { message = "No brands!" });
+            if (!brands.Any()) return RedirectToAction("Error", "Home", new { message = "Неможливо додати одяг, немає брендів!" });
             var clothes = new Clothes();
             var clothesTypes = await _clothes.GetClothesTypesByCategory(category);
             clothes.ClothesTypeId = clothesTypes.FirstOrDefault(e => e.Name == type).Id;
@@ -222,15 +236,6 @@ namespace ClothesStore.WebUI.Controllers
             catch (Exception) { }
             await _clothesStore.Delete(id);
             return RedirectToReturnUrlOrHome(returnUrl);
-        }
-
-        private SelectList GetBrandsSelectList(IEnumerable<Brand> brands)
-        {
-            return new SelectList(brands, "Id", "Value");
-        }
-        private SelectList GetSizeSelectList(IEnumerable<Size> sizes)
-        {
-            return new SelectList(sizes, "Id", "Mark");
         }
 
         public async Task<IActionResult> ClothesMarks(int id)

@@ -11,7 +11,9 @@ namespace ClothesStore.Domain.Entities
         [StringLength(500)]
         [System.ComponentModel.DisplayName("Назва одягу")]
         public string Name { get; set; }
+        [JsonIgnore]
         public virtual Brand Brand { get; set; }
+        [JsonIgnore]
         public int BrandId { get; set; }
 
 

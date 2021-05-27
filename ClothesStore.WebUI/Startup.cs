@@ -45,10 +45,12 @@ namespace ClothesStore.WebUI
                 e.Password.RequireNonAlphanumeric = false;
                 e.Password.RequiredLength = 6;
             });
+            services.AddHttpContextAccessor();
             services.AddScoped<IClothesRepository, ClothesRepository>();
             services.AddTransient<IdentityService>();
-
+            services.AddScoped<IOrderRepository, EfOrderRepository>();
             services.AddScoped<IClothesService, ClothesService>();
+            services.AddScoped<IOrderService, OrderService>();
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("Admin", p => p.RequireClaim("access", Role.Admin.ToString()));

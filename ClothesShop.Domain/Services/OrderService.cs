@@ -12,37 +12,38 @@ namespace ClothesStore.Domain.Services
         private readonly IAsyncRepository<Order> _orders;
         private readonly IAsyncRepository<ClothesOrder> _orderItems;
         private readonly IAsyncRepository<ClothesMark> _store;
-
-        public OrderService(IAsyncRepository<Order> orders)
+        private readonly IOrderRepository _orderRep;
+        private readonly IAsyncRepository<Client> _clients;
+        public OrderService(IAsyncRepository<Order> orders, IAsyncRepository<ClothesMark> store, IAsyncRepository<ClothesOrder> orderItems, IOrderRepository orderRep, IAsyncRepository<Client> clients)
         {
             _orders = orders;
+            _store = store;
+            _orderItems = orderItems;
+            _orderRep = orderRep;
+            _clients = clients;
         }
 
         public async Task AddOrder(Order order, IEnumerable<ClothesOrder> list)
         {
-            var marks = await _store.GetBy(e => list.Any(m => m.ClothesUnitId == e.Id));
-            var checkList = marks.Select(e => new { StoreCount = e.CountInStock, CountToGet = list.FirstOrDefault(m => e.Id == m.ClothesUnitId).Count });
-            if (checkList.Any(e => e.StoreCount < e.CountToGet))
+            if((await UnOrderableMarks(list)).Any())
                 throw new ArgumentException("Не достатньо речей на складі!");
 
-            order.ClothesOrders = list;
-
-            foreach (var mark in marks)
+            order.ClothesOrders = list.ToList();
+            await _orderRep.SaveOrder(order);
+           
+            foreach(var item in order.ClothesOrders)
             {
-                mark.CountInStock -= list.FirstOrDefault(e => mark.Id == e.ClothesUnitId).Count;
-                await _store.Update(mark);
+                item.ClothesUnit.CountInStock -= item.Count;
+                await _store.Update(item.ClothesUnit);
             }
-            await _orders.Create(order);
         }
 
         public async Task<IEnumerable<ClothesMark>> UnOrderableMarks(IEnumerable<ClothesOrder> list)
         {
-            var marks = await _store.GetBy(e => list.Any(m => m.ClothesUnitId == e.Id));
-            var checkList = marks.Select(e => new { ClothesOrder =  StoreCount = e.CountInStock, CountToGet = list.FirstOrDefault(m => e.Id == m.ClothesUnitId).Count })
+            var elems = list.Select(e => new { e.ClothesUnit, e.Count, e.ClothesUnit.Size }).Where(e => e.ClothesUnit.CountInStock < e.Count)
+                .Select(e => e.ClothesUnit);
+            return elems;
         }
-
-
-
 
         public async Task CancelOrder(int id)
         {
@@ -53,7 +54,7 @@ namespace ClothesStore.Domain.Services
 
         public async Task<IEnumerable<Order>> GetLastClientOrders(int count, int clientId)
         {
-            var orders = (await _orders.GetBy(e => e.ClientId == clientId)).Take(count);
+            var orders = (await _orders.GetBy(e => e.Client.Id == clientId)).Take(count);
             return orders;
         }
 

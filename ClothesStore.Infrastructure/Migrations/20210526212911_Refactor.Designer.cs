@@ -4,14 +4,16 @@ using ClothesStore.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ClothesStore.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210526212911_Refactor")]
+    partial class Refactor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -197,11 +199,6 @@ namespace ClothesStore.Infrastructure.Migrations
                     b.Property<bool>("Canceled")
                         .HasColumnType("bit");
 
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
                     b.Property<int?>("ClientId")
                         .HasColumnType("int");
 
@@ -213,15 +210,6 @@ namespace ClothesStore.Infrastructure.Migrations
 
                     b.Property<int>("PayMethod")
                         .HasColumnType("int");
-
-                    b.Property<string>("PostalCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ShipAddress")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
 
                     b.Property<DateTime>("ShipDate")
                         .HasColumnType("datetime2");
@@ -321,9 +309,40 @@ namespace ClothesStore.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("ManagerId");
 
+                    b.OwnsOne("ClothesStore.Domain.Entities.Address", "ShipAddress", b1 =>
+                        {
+                            b1.Property<int>("OrderId")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("int")
+                                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                            b1.Property<string>("City")
+                                .IsRequired()
+                                .HasMaxLength(100)
+                                .HasColumnType("nvarchar(100)");
+
+                            b1.Property<string>("PostalCode")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("ShipAddress")
+                                .IsRequired()
+                                .HasMaxLength(500)
+                                .HasColumnType("nvarchar(500)");
+
+                            b1.HasKey("OrderId");
+
+                            b1.ToTable("Orders");
+
+                            b1.WithOwner()
+                                .HasForeignKey("OrderId");
+                        });
+
                     b.Navigation("Client");
 
                     b.Navigation("Manager");
+
+                    b.Navigation("ShipAddress");
                 });
 
             modelBuilder.Entity("ClothesStore.Domain.Entities.Clothes", b =>
