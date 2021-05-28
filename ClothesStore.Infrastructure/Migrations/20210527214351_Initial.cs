@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-using System;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ClothesStore.Infrastructure.Migrations
 {
@@ -13,7 +13,7 @@ namespace ClothesStore.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -40,7 +40,7 @@ namespace ClothesStore.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Destinantion = table.Column<int>(type: "int", nullable: false),
                     ImageName = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -67,7 +67,7 @@ namespace ClothesStore.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Mark = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Mark = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -80,10 +80,10 @@ namespace ClothesStore.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     BrandId = table.Column<int>(type: "int", nullable: false),
                     PromoutionPercent = table.Column<float>(type: "real", nullable: false),
-                    Material = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Material = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     ClothesTypeId = table.Column<int>(type: "int", nullable: false),
                     Cost = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     ImageName = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -114,11 +114,11 @@ namespace ClothesStore.Infrastructure.Migrations
                     PayMethod = table.Column<int>(type: "int", nullable: false),
                     DateOfOrder = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ShipDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ClientId = table.Column<int>(type: "int", nullable: false),
-                    ManagerId = table.Column<int>(type: "int", nullable: false),
-                    ShipAddress_PostalCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ShipAddress_City = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    ShipAddress_ShipAddress = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    ClientId = table.Column<int>(type: "int", nullable: true),
+                    ManagerId = table.Column<int>(type: "int", nullable: true),
+                    PostalCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    City = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    ShipAddress = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     Canceled = table.Column<bool>(type: "bit", nullable: false),
                     Shiped = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -130,13 +130,13 @@ namespace ClothesStore.Infrastructure.Migrations
                         column: x => x.ClientId,
                         principalTable: "Clients",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Orders_Managers_ManagerId",
                         column: x => x.ManagerId,
                         principalTable: "Managers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -230,8 +230,7 @@ namespace ClothesStore.Infrastructure.Migrations
                 name: "IX_ClothesTypes_Destinantion_Name",
                 table: "ClothesTypes",
                 columns: new[] { "Destinantion", "Name" },
-                unique: true,
-                filter: "[Name] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_ClientId",

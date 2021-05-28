@@ -3,48 +3,51 @@
 @{
     ViewData["Title"] = "Замовлення";
 }
-@if (Model.Count() > 0)
-{
-    <table class="table table-bordered table-striped">
+
+<table class="table table-bordered table-striped">
+    <tr>
+        <th>Номер телефону</th>
+        <th>Поштовий код</th>
+        <th>Статус</th>
+        <th>Id менеджера</th>
+        <th colspan="2">Інфо</th>
+    </tr>
+    @foreach (var o in Model.ToList().OrderByDescending(e=>e.DateOfOrder))
+    {
         <tr>
-            <th>Номер телефону</th>
-            <th>Поштовий код</th>
-            <th colspan="2">Інфо</th>
-            <th></th>
+            <td>
+                @o.Client.PhoneNumber
+            </td>
+            <td>
+                @o.PostalCode
+            </td>
+            <td>
+                @if(o.Shiped)
+                {
+                    <p>Відправлено</p>
+                }
+                else if(o.Canceled)
+                {
+                    <p>Відмінено</p>
+                }
+                else
+                {
+                    <p>У обробці</p>
+                }
+            </td>
+            <td>
+                @o.Manager?.Id
+            </td>
+            <th>Одяг</th>
+            <th>Кількість</th>
         </tr>
-        @foreach (var o in Model)
+        @foreach (var line in o.ClothesOrders)
         {
             <tr>
-                <td>
-                    @o.Client.PhoneNumber
-                </td>
-                <td>
-                    @o.PostalCode
-                </td>
-                <th>Продукт</th>
-                <th>Кількість</th>
-                <td>
-                    <form asp-action="MarkShipped" method="post">
-                        <input type="hidden" name="id" value="@o.Id" />
-                        <button type="submit" class="btn btn-sm btn-danger">
-                            Відправлено!
-                        </button>
-                    </form>
-                </td>
+                <td colspan="3"></td>
+                <td>@line.ClothesUnit.Clothes.Name</td>
+                <td>@line.Count</td>
             </tr>
-            @foreach (var line in o.ClothesOrders)
-            {
-                <tr>
-                    <td colspan="2"></td>
-                    <td>@line.ClothesUnit.Clothes.Name</td>
-                    <td>@line.Count</td>
-                    <td></td>
-                </tr>
-            }
         }
-    </table>
-}
-else
-{
-    <div class="text-center">Немає не відправленних замовлень!</div>
-}
+    }
+</table>

@@ -20,11 +20,13 @@ namespace ClothesStore.Domain.Services
         }
 
         public IQueryable<Order> Orders => context.Orders.Include(o => o.ClothesOrders)
-            .ThenInclude(l => l.ClothesUnit);
+            .ThenInclude(l => l.ClothesUnit).Include(o=>o.Client);
 
         public async Task SaveOrder(Order order)
         {
             context.AttachRange(order.ClothesOrders.Select(l => l.ClothesUnit));
+            context.Attach(order.Client);
+            context.Entry(order.Client).State = EntityState.Modified;
             if (order.Id == 0)
             {
                 context.Orders.Add(order);

@@ -11,8 +11,12 @@ namespace ClothesStore.WebUI.Models.Identity
     public class RegisterViewModel
     {
         [Required]
-        [Display(Name = "Email")]
-        public string Email { get; set; }
+        [Display(Name = "Логін")]
+        public string Login { get; set; }
+
+        [Required]
+        [Display(Name = "Повне ім'я")]
+        public string FullName { get; set; }
 
         [Required]
         [Display(Name = "Номер телефону")]

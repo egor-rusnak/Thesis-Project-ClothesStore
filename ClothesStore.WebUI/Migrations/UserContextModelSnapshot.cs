@@ -38,7 +38,13 @@ namespace ClothesStore.WebUI.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<int>("IdForExternalDb")
+                    b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("IdClient")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdManager")
                         .HasColumnType("int");
 
                     b.Property<bool>("LockoutEnabled")

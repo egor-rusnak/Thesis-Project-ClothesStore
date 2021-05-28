@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClothesStore.WebUI.Migrations
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20210523170625_InitialCommit")]
-    partial class InitialCommit
+    [Migration("20210527214208_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -39,6 +39,15 @@ namespace ClothesStore.WebUI.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("IdClient")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdManager")
+                        .HasColumnType("int");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");

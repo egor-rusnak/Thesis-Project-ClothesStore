@@ -7,6 +7,7 @@ using ClothesStore.WebUI.Extensions;
 using System.Threading.Tasks;
 using ClothesStore.WebUI.Models.ViewModels;
 using ClothesStore.Domain.Interfaces;
+using System.Linq;
 
 namespace ClothesStore.WebUI.Controllers
 {
@@ -17,11 +18,12 @@ namespace ClothesStore.WebUI.Controllers
         private readonly Services.IdentityService _service;
         private readonly IOrderService _orderSerivce;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, Services.IdentityService service)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, Services.IdentityService service, IOrderService orderSerivce)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _service = service;
+            _orderSerivce = orderSerivce;
         }
         [HttpGet]
         [AllowAnonymous]
@@ -32,19 +34,25 @@ namespace ClothesStore.WebUI.Controllers
         [Authorize]
         public async Task<IActionResult> Index()
         {
+            if (HttpContext.CheckFullPrivilegies())
+                return RedirectToAction("Index", "Admin");
+            
             if (HttpContext.CheckManagerPrivilegies())
             {
                 var manager = await _userManager.GetUserAsync(HttpContext.User);
-                if (manager == null || manager.IdForExternalDb == 0) return NotFound();
+                if (manager == null || manager.IdManager == 0) return NotFound();
                 return View("ManagerIndex", new ManagerIndexViewModel()
                 {
-                    Orders = await _orderSerivce.GetOrdersWithManagerIdOrWithoutManager(manager.IdForExternalDb)
+                    Orders = (await _orderSerivce.GetOrdersWithManagerIdOrWithoutManager(manager.IdManager)).Where(e=>!e.Canceled && !e.Shiped)
                 });
             }
-            else if (HttpContext.CheckFullPrivilegies())
-                return RedirectToAction("Index", "Account");
             else
-                return View("UserIndex", new UserViewModel);
+            {
+                var client = await _userManager.GetUserAsync(HttpContext.User);
+                if (client == null || client.IdClient == 0) return NotFound();
+                return View("UserIndex",await _orderSerivce.GetLastClientOrders(10,client.IdClient));
+            }
+
         }
 
         [HttpPost]

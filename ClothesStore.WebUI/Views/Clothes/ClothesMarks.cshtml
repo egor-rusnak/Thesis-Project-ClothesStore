@@ -1,11 +1,13 @@
 ﻿@model MarksListViewModel
 
-
+@{
+    ViewData["Title"] = "Розміри для одягу - " + Model.Clothes.Name;
+}
 
 <hr/>
 <h1>@Model.Clothes.Name</h1>
 
-<a asp-action="AddMark" asp-route-id="@Model.Clothes.Id">Додати</a>
+<a asp-action="AddMark" asp-route-id="@Model.Clothes.Id" asp-route-returnUrl="@Context.Request.PathAnQuery()">Додати</a>
     <table class="table table-bordered">
        <thead>
            <tr>

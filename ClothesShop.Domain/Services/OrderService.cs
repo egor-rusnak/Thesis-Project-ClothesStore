@@ -14,13 +14,15 @@ namespace ClothesStore.Domain.Services
         private readonly IAsyncRepository<ClothesMark> _store;
         private readonly IOrderRepository _orderRep;
         private readonly IAsyncRepository<Client> _clients;
-        public OrderService(IAsyncRepository<Order> orders, IAsyncRepository<ClothesMark> store, IAsyncRepository<ClothesOrder> orderItems, IOrderRepository orderRep, IAsyncRepository<Client> clients)
+        private readonly IAsyncRepository<Manager> _managers;
+        public OrderService(IAsyncRepository<Order> orders, IAsyncRepository<ClothesMark> store, IAsyncRepository<ClothesOrder> orderItems, IOrderRepository orderRep, IAsyncRepository<Client> clients, IAsyncRepository<Manager> managers)
         {
             _orders = orders;
             _store = store;
             _orderItems = orderItems;
             _orderRep = orderRep;
             _clients = clients;
+            _managers = managers;
         }
 
         public async Task AddOrder(Order order, IEnumerable<ClothesOrder> list)
@@ -49,13 +51,18 @@ namespace ClothesStore.Domain.Services
         {
             var order = await _orders.GetById(id);
             order.Canceled = true;
+            foreach(var prod in order.ClothesOrders)
+            {
+                prod.ClothesUnit.CountInStock += prod.Count;
+                await _store.Update(prod.ClothesUnit);
+            }
             await _orders.Update(order);
         }
 
         public async Task<IEnumerable<Order>> GetLastClientOrders(int count, int clientId)
         {
             var orders = (await _orders.GetBy(e => e.Client.Id == clientId)).Take(count);
-            return orders;
+            return orders.ToList();
         }
 
         public async Task RemoveOrder(int id)
@@ -66,6 +73,14 @@ namespace ClothesStore.Domain.Services
         public async Task UpdateOrder(Order order)
         {
             await _orders.Update(order);
+        }
+
+        public async Task<IEnumerable<Order>> GetOrdersWithManagerIdOrWithoutManager(int managerId)
+        {
+            var manager = await _managers.GetById(managerId);
+            if (manager == null) throw new ArgumentException("Не знайдено менеджера!");
+            var orders = await _orders.GetBy(e => e.Manager==null || e.Manager.Id==managerId);
+            return orders.ToList();
         }
     }
 }

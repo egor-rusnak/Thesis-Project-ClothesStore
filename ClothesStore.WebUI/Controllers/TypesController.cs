@@ -141,7 +141,7 @@ namespace ClothesStore.WebUI.Controllers
             try
             {
                 if (clothesType.ImageName != null)
-                    System.IO.File.Delete(Path.Combine("uploads//clothes", clothesType.ImageName));
+                    System.IO.File.Delete(Path.Combine(_enviroment.WebRootPath, "uploads//clothes", clothesType.ImageName));
             }
             catch (Exception) { }
 

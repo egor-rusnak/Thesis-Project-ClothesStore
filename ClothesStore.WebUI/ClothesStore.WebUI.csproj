@@ -20,7 +20,6 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\ClothesShop.Domain\ClothesStore.Domain.csproj" />
     <ProjectReference Include="..\ClothesStore.Infrastructure\ClothesStore.Infrastructure.csproj" />

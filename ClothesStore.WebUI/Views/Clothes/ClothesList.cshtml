@@ -1,6 +1,6 @@
 ﻿@model ClothesListViewModel
 @{
-    ViewData["Title"] = Model.CategoryName +" "+ Model.TypeName;
+    ViewData["Title"] = Model.CategoryName +" - "+ Model.TypeName;
 }
 
 <h2>@Model.CategoryName  -  @Model.TypeName</h2>
@@ -9,35 +9,43 @@
     <a asp-controller="Clothes" asp-action="Create" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAnQuery()"
        asp-route-type="@Model.TypeName" asp-route-category="@Model.CategoryName">Додати новий одяг</a>
 }
+<hr/>
 <div class="row">
     <div class="col-2 border-right">
-        <div>
-            @if (Model.Brands.Count() > 0)
-            {
-                <h3>Бренди</h3>
-                @foreach (var brand in Model.Brands)
-                {
-                    @if (brand != null)
-                    {
-                        <form model="@brand" method="post">
-                            @brand.BrandName
-                            @if(brand.Checked){
-                                <input type="checkbox" value="@brand.BrandId" checked />    
-                            }
-                                else { <input type="checkbox" value="@brand.BrandId" />}
-                        </form>
-                    }
-                }
-            }
-        </div>
+            <div class="order">
+                <form  asp-action="ClothesList" method="get"                             
+                asp-route-category="@Model.CategoryName"
+                       asp-route-type="@Model.TypeName">
+                   <div class="form-group">    
+                   <label class="col-form-label" >Сортування</label>
+                 <select asp-for="Sort" class="form-control"  name="sort" type="submit">
+                     <option value="0">Без сортування</option>
+                     <option value="1">За зростанням ціни</option>
+                     <option value="2">За спаданням ціни</option>
+                 </select>
+                 </div>
+
+                 <input type="hidden" name="category" value="@Model.CategoryName" />
+                 <input type="hidden" name="type" value="@Model.TypeName" />
+                 <div class="form-group">
+                    <label>Ціна з: </label>
+                     <input class="form-control"fo type="number" value="@Model.StartCost" name="costStart" />
+                     <label>До</label>
+                     <input class="form-control" type="number" value="@Model.EndCost" name="costEnd"/> 
+                 </div>
+                 <input type="submit" value="Виконати" />
+                </form>
+            </div>
     </div>
+
     <div class="col-10 row">
+
         @foreach (var clothes in Model.Clothes)
         {
             <div class="col-3">
 
                 @await (Html.PartialAsync("ClothesItem", clothes))
-                @if (Context.User.Claims.Any(e => e.Value == "Manager") || Context.User.Claims.Any(e => e.Value == "Admin"))
+                @if (@Context.CheckFullPrivilegies())
                 {
                     <form asp-action="Delete" asp-controller="Clothes" asp-route-id="@clothes.Id" asp-route-returnUrl="@Context.Request.PathAnQuery()">
                         <button type="submit" class="btn btn-danger">Вилучити</button>
@@ -46,4 +54,26 @@
             </div>
         }
     </div>
+@if (Model.PageModel.HasPreviousPage)
+{
+    <a asp-action="ClothesList"
+       asp-route-page="@(Model.PageModel.PageNumber - 1)"
+                         asp-route-category="@Model.CategoryName"
+                   asp-route-type="@Model.TypeName"
+       class="btn btn-outline-dark">
+        <i class="glyphicon glyphicon-chevron-left"></i>
+        Назад
+    </a>
+}
+@if (Model.PageModel.HasNextPage)
+{
+    <a asp-action="ClothesList"
+       asp-route-page="@(Model.PageModel.PageNumber + 1)"
+                                asp-route-category="@Model.CategoryName"
+                   asp-route-type="@Model.TypeName"
+       class="btn btn-outline-dark">
+        Вперед
+        <i class="glyphicon glyphicon-chevron-right"></i>
+    </a>
+}
 </div>

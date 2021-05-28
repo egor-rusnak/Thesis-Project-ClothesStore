@@ -9,22 +9,25 @@
     <a asp-action="Create" asp-controller="Types" asp-route-returnUrl="@Context.Request.PathAnQuery()">Додати тип</a>
 }
 <hr />
-<div class="row">
+<div  class="row">
     @foreach (var elem in Model.Types)
     {
-        <div class="card col-3">
-            <img class="card-img-bottom" src="~/uploads/types/@elem.ImageName" />
+        <div class="card col-2">
+            <img class="img card-img-top" src="~/uploads/types/@elem.ImageName" />
             <div class="card-body">
-                <a class="" asp-controller="Clothes"
+                <a class="text" asp-controller="Clothes"
                    asp-action="ClothesList"
                    asp-route-category="@Model.Category"
                    asp-route-type="@elem.Name">
                     @elem.Name
                 </a>
             </div>
-            <div class="card-footer">
-                <a asp-action="Delete" asp-controller="Types" asp-route-id="@elem.Id">Вилучити</a>
+            @if (Context.CheckFullPrivilegies())
+            {
+                <div class="card-footer">
+                <a class="btn btn-danger" asp-action="Delete" asp-controller="Types" asp-route-id="@elem.Id">Вилучити</a>
             </div>
+            }
         </div>
     }
 </div>

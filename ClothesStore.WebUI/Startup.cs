@@ -45,6 +45,7 @@ namespace ClothesStore.WebUI
                 e.Password.RequireNonAlphanumeric = false;
                 e.Password.RequiredLength = 6;
             });
+            services.AddScoped<ISizeMarksService, SizeMarksService>();
             services.AddHttpContextAccessor();
             services.AddScoped<IClothesRepository, ClothesRepository>();
             services.AddTransient<IdentityService>();
@@ -55,7 +56,7 @@ namespace ClothesStore.WebUI
             {
                 options.AddPolicy("Admin", p => p.RequireClaim("access", Role.Admin.ToString()));
                 options.AddPolicy("Manager", p => p.RequireClaim("access", new[] { Role.Manager.ToString(), Role.Admin.ToString() }));
-                options.AddPolicy("User", p => p.RequireClaim("access", Role.User.ToString()));
+                options.AddPolicy("User", p => p.RequireClaim("access", Role.User.ToString(),Role.Admin.ToString()));
             });
             services.AddLogging();
             services.AddMemoryCache(); //now can use services  of cache memory 

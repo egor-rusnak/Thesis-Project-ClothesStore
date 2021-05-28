@@ -1,5 +1,44 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model IEnumerable<Order>
+
+<h1>
+    Останні 10 замовленн:
+</h1>
+    <table class="table table-bordered table-striped">
+         <tr>
+        <th>Номер замовлення</th>
+        <th>Статус</th>
+        <th colspan="2">Інфо</th>
+    </tr>
+    @foreach (var o in Model.ToList().Take(10).OrderByDescending(e=>e.DateOfOrder))
+    {
+        <tr>
+            <td>
+                @o.Id
+            </td>
+            <td>
+                @if(o.Shiped)
+                {
+                    <p>Відправлено</p>
+                }
+                else if(o.Canceled)
+                {
+                    <p>Відмінено</p>
+                }
+                else
+                {
+                    <p>У обробці</p>
+                }
+            </td>
+            <th>Одяг</th>
+            <th>Кількість</th>
+        </tr>
+        @foreach (var line in o.ClothesOrders)
+        {
+            <tr>
+                <td colspan="2"></td>
+                <td>@line.ClothesUnit.Clothes.Name</td>
+                <td>@line.Count</td>
+            </tr>
+        }
+    }
+    </table>

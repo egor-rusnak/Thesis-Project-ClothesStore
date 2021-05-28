@@ -21,8 +21,9 @@ namespace ClothesStore.WebUI.Controllers
         private readonly IAsyncRepository<Brand> _brands;
         private readonly IAsyncRepository<ClothesMark> _marks;
         private readonly IAsyncRepository<Size> _sizes;
+        private readonly ISizeMarksService _sizesService;
         private readonly IWebHostEnvironment _enviroments;
-        public ClothesController(IClothesService clothes, IWebHostEnvironment enviroments, IAsyncRepository<Clothes> clothesStore, IAsyncRepository<Brand> brands, IAsyncRepository<Size> sizes, IAsyncRepository<ClothesMark> marks)
+        public ClothesController(IClothesService clothes, IWebHostEnvironment enviroments, IAsyncRepository<Clothes> clothesStore, IAsyncRepository<Brand> brands, IAsyncRepository<Size> sizes, IAsyncRepository<ClothesMark> marks, ISizeMarksService sizesService)
         {
             _clothes = clothes;
             _enviroments = enviroments;
@@ -30,8 +31,9 @@ namespace ClothesStore.WebUI.Controllers
             _brands = brands;
             _sizes = sizes;
             _marks = marks;
+            _sizesService = sizesService;
         }
-
+        [Authorize(Policy = "Manager")]
         public async Task<IActionResult> AddMark(int id, string returnUrl)
         {
             var clothes = await _clothesStore.GetById(id);
@@ -50,15 +52,23 @@ namespace ClothesStore.WebUI.Controllers
 
             return View(model);
         }
-
+        [Authorize(Policy = "Manager")]
         [HttpPost]
         public async Task<IActionResult> AddMark(MarkViewModel model)
         {
             if (ModelState.IsValid)
             {
-
-                await _marks.Create(model.Entity);
-                return RedirectToReturnUrlOrHome(model.ReturnUrl);
+                try
+                {
+                    await _sizesService.AddMark(model.Entity);
+                    return RedirectToReturnUrlOrHome(model.ReturnUrl);
+                }
+                catch(Exception ex)
+                {
+                    ViewBag.Sizes = await _sizes.GetAll();
+                    ModelState.AddModelError("Db:", ex.Message);
+                    return View(model);
+                }
             }
             else
             {
@@ -71,6 +81,7 @@ namespace ClothesStore.WebUI.Controllers
             if (string.IsNullOrEmpty(returnUrl)) return RedirectToAction("Index", "Home");
             else return Redirect(returnUrl);
         }
+        [Authorize(Policy = "Manager")]
         [HttpGet]
         public async Task<IActionResult> EditMark(int id, string returnUrl)
         {
@@ -80,18 +91,28 @@ namespace ClothesStore.WebUI.Controllers
 
             return View(new MarkViewModel { ClothesName=mark.Clothes.Name, Entity = mark, ReturnUrl=returnUrl });
         }
+        [Authorize(Policy="Manager")]
         [HttpPost]
         public async Task<IActionResult> EditMark(MarkViewModel model) 
         {
             if (ModelState.IsValid)
             {
-                await _marks.Update(model.Entity);
-                return RedirectToReturnUrlOrHome(model.ReturnUrl);
+                try
+                {
+                    await _sizesService.EditMark(model.Entity);
+                    return RedirectToReturnUrlOrHome(model.ReturnUrl);
+                }
+                catch(Exception ex)
+                {
+                    ViewBag.Sizes = await _sizes.GetAll();
+                    ModelState.AddModelError("Db:", ex.Message);
+                    return View(model);
+                }
             }
             ViewBag.Sizes = await _sizes.GetAll();
             return View(model); 
         }
-
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> DeleteMark(int id,string returnUrl)
         {
             var mark = await _marks.GetById(id);
@@ -122,6 +143,7 @@ namespace ClothesStore.WebUI.Controllers
             }
         }
 
+        [Authorize(Policy ="Manager")]
         public async Task<IActionResult> Edit(int id,string returnUrl)
         {
             var clothes = await _clothesStore.GetById(id);
@@ -135,6 +157,7 @@ namespace ClothesStore.WebUI.Controllers
 
             return View(model);
         }
+        [Authorize(Policy ="Manager")]
         [HttpPost]
         public async Task<IActionResult> Edit(EditViewModel<Clothes> model)
         {
@@ -153,7 +176,7 @@ namespace ClothesStore.WebUI.Controllers
                 return View(model);
             }
         }
-
+      
         [HttpGet]
         public async Task<IActionResult> Details(int id, string returnUrl)
         {
@@ -169,20 +192,41 @@ namespace ClothesStore.WebUI.Controllers
         }
 
 
+        
         [HttpGet]
-        public async Task<IActionResult> ClothesList(string category, string type)
+        public async Task<IActionResult> ClothesList(string category, string type, int? sort, int? costStart, int? costEnd, int page = 1)
         {
             try
-            { 
+            {
+                int pageSize = 8;
                 var clothes = await _clothes.GetClothesByTypeAndCategory(type, category);
+                var count = clothes.Count();
+                var items = clothes.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+                if (sort.HasValue)
+                {
+                    if ((SortModeView)sort == SortModeView.CostAsc) items = items.OrderBy(e => e.Cost).ToList();
+                    else if ((SortModeView)sort == SortModeView.CostDesc) items = items.OrderByDescending(e => e.Cost).ToList();
+                }
+                if(costStart.HasValue && costStart > 0)
+                {
+                    items = items.Where(e => e.Cost >= costStart).ToList();
+                }
+                if(costEnd.HasValue && costEnd>0)
+                {
+                    items = items.Where(e => e.Cost <= costEnd).ToList();
+                }
+
 
                 return View(new ClothesListViewModel()
                 {
                     CategoryName = category,
                     TypeName = type,
-                    Clothes = clothes.Select(e => ClothesViewModel.CreateClothesView(e)),
-                    Brands = clothes.Select(e => new BrandsCheck { BrandId = e.Brand.Id, BrandName = e.Brand.Name, Checked = true })
-                    .GroupBy(e => e.BrandId).Select(e => e.First()).ToList()
+                    Clothes = items.Select(e => ClothesViewModel.CreateClothesView(e)),
+                    PageModel = new PageViewModel(count, page, pageSize),
+                    EndCost=costEnd??99999,
+                    StartCost=costStart??0,
+                    Sort = (SortModeView)(sort??0)
                 }) ;
             }
             catch(ArgumentException)
@@ -223,7 +267,7 @@ namespace ClothesStore.WebUI.Controllers
             }
             return View(clothesModel);
         }
-        [Authorize(Policy = "Manager")]
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Delete(int id, string returnUrl)
         {
             var clothes =await _clothesStore.GetById(id);
@@ -231,13 +275,14 @@ namespace ClothesStore.WebUI.Controllers
             try
             {
                 if (clothes.ImageName != null)
-                    System.IO.File.Delete(Path.Combine("uploads//clothes", clothes.ImageName));
+                    System.IO.File.Delete(Path.Combine(_enviroments.WebRootPath, "uploads//clothes", clothes.ImageName));
             }
             catch (Exception) { }
             await _clothesStore.Delete(id);
             return RedirectToReturnUrlOrHome(returnUrl);
         }
 
+        [Authorize(Policy ="Manager")]
         public async Task<IActionResult> ClothesMarks(int id)
         {
             var clothes = await _clothesStore.GetById(id);

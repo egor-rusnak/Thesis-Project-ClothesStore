@@ -19,7 +19,7 @@ namespace ClothesStore.WebUI.Models.ViewModels
             {
                 Id = clothes.Id,
                 Name = clothes.Name,
-                Description = clothes.Material + " " + clothes.Brand?.Name + " " + clothes.Name,
+                Description = clothes.Brand?.Name +  " || " + " " + clothes.Name+" "+clothes.Material,
                 Cost = clothes.Cost,
                 Sizes = clothes.ClothesMarksInStock.Where(e=>e.CountInStock>0).Select(e => new SizeViewModel { SizeId = e.Size.Id, SizeMark = e.Size.Mark }),
                 Image = clothes.ImageName,

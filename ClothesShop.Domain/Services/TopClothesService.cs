@@ -19,21 +19,27 @@ namespace ClothesStore.Domain.Services
             _scopeFactory = factory;
             _timer = timer;
             _timer.Elapsed += Service_Elapsed;
-            _timer.Interval = 10000;
+            _timer.Interval = 30000;
             _timer.Start();
+            Service_Elapsed(this, null);
         }
 
         private void Service_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             using (var scope = _scopeFactory.CreateScope())
             {
-                var orders = scope.ServiceProvider.GetRequiredService<IAsyncRepository<Order>>().GetBy(e => e.Shiped && e.DateOfOrder >= DateTime.Now.AddMonths(-1)).Result;
-                if (orders.Count() == 0) clothesList = new List<Clothes>();
-
-                var clothes = orders.SelectMany(e => e.ClothesOrders);
-                var resClothes = clothes.Select(e => e.ClothesUnit);
-                var resresClothes = resClothes.Select(e => e.Clothes).ToList();
-                resresClothes.GroupBy(e => e.Id).OrderByDescending(e => e.Count());
+                var clothesService = scope.ServiceProvider.GetRequiredService<IClothesRepository>();
+                var ordersService = scope.ServiceProvider.GetRequiredService < IAsyncRepository<Order>>();
+                var orders = ordersService.GetAll().Result.Where(e=>e.DateOfOrder>=DateTime.Now.AddMonths(-1) && e.Shiped).ToList();
+                if (orders.Count() == 0)
+                {
+                    clothesList = new List<Clothes>();
+                    return;
+                }
+                var allOrderedItems = orders.SelectMany(e => e.ClothesOrders);
+                var resultItems = allOrderedItems.Select(e => e.ClothesUnit.Clothes);
+                var elems = clothesService.GetClothesWithSizesAndBrands().Result.Intersect(resultItems);
+                clothesList = elems.ToList();
             }
         }
 
